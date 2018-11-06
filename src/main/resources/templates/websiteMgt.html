@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../../../favicon.ico">
+
+    <title>假日管理</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom styles for this tmemberlate -->
+    <link href="/css/dashboard.css" rel="stylesheet"/>
+    <link href="/css/bootstrap-table.css" rel="stylesheet">
+    <!-- jQuery v1.9.1 -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <!-- Moment.js v2.20.0 -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.0/moment.min.js"></script>
+    <!-- FullCalendar v3.8.1 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.8.1/fullcalendar.min.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.8.1/fullcalendar.print.css" rel="stylesheet"
+          media="print">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.8.1/fullcalendar.min.js"></script>
+    <style>
+        th {
+            background-color: #DDDDDD;
+        }
+    æ</style>
+</head>
+
+<body>
+<!--引入topbar-->
+<div th:replace="common/bar::top_bar"></div>
+
+<div class="container-fluid">
+    <div class="row">
+        <!--引入sidebar-->
+        <div th:replace="common/bar::side_bar(activeUrl='main')"></div>
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+
+            <div id="calendar"></div>
+
+            <script>
+                var Today = new Date();
+                var now = Today.getFullYear() + "-" + (Today.getMonth() + 1) + "-" + Today.getDate();
+                $("#calendar").fullCalendar({
+                    // 參數設定[註1]
+                    header: {
+                        left: '',
+                        center: 'title',
+                        right: 'prev,next today'
+                    },
+                    monthNames: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+                    monthNamesShort: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+                    dayNames: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+                    dayNamesShort: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+                    defaultDate: now, // 起始日期navLinks: true, // can click day/week names to navigate views
+                    selectable: true,
+                    selectHelper: true,
+                    editable: true,
+                    eventLimit: true, // allow "more" link when too many events
+                    eventStartEditable: false,
+                    eventBackgroundColor: "#FF6666",
+
+                    dayClick: function (date, event, view) {
+                        console.log('add event');
+                        console.log(date._d);
+
+                    },
+                    eventClick: function (date, event, view) {
+                        console.log('modify event');
+                        console.log(date);
+                        console.log(date.start._i);
+
+                    },
+                    events: function (start, end, timezone, callback) {
+                        alert(start.format('YYYY-MM-DD'));
+                        alert(end.format('YYYY-MM-DD'));
+
+                        $.ajax({
+                            url: "holiday/load",
+                            type: "POST",
+                            data: JSON.stringify('2018-11-01'),
+                            dataType: "json",
+                            success: function (data) {
+                                console.log(data);
+                                var events = [];
+                                $.each(data, function (key, value) {
+                                    if (value.id == '1') {
+                                        events.push({
+                                            title: '假日',
+                                            start: new Date(Date.parse(value.projectName)),
+                                            end: new Date(Date.parse(value.projectName)),
+                                            allDay: true
+                                        });
+
+                                    }
+
+                                    /* var eventData;
+                                    console.log(value.start);
+                                    eventData = {
+                                        title: value.title,
+                                        start: value.start,
+                                        end: value.end
+                                    };
+                                    $('#calendar').fullCalendar('renderEvent', eventData, true); */
+                                });
+                                callback(events);
+                            },
+                            error: function () {
+
+                            }
+                        });
+                    },
+
+                });
+                // $('#calendar').fullCalendar('renderEvent', {
+                //     title: '明天的活動',
+                //     start: moment().add(1, 'days').format('YYYY-MM-DD')
+                // });
+            </script>
+
+
+        </main>
+    </div>
+</div>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="/js/popper.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+
+<!-- Icons -->
+<script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
+<script>
+    feather.replace()
+</script>
+
+</body>
+</html>
