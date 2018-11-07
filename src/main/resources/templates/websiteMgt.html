@@ -26,7 +26,8 @@
         th {
             background-color: #DDDDDD;
         }
-    æ</style>
+
+        æ</style>
 </head>
 
 <body>
@@ -75,23 +76,24 @@
 
                     },
                     events: function (start, end, timezone, callback) {
-                        alert(start.format('YYYY-MM-DD'));
-                        alert(end.format('YYYY-MM-DD'));
-
+                        var startDat = start.format('YYYY-MM-DD');
+                        var endDat = end.format('YYYY-MM-DD');
+                        var data1 = JSON.stringify({"startDat": startDat, "endDat": endDat});
                         $.ajax({
                             url: "holiday/load",
+                            contentType: 'application/json; charset=UTF-8',
                             type: "POST",
-                            data: JSON.stringify('2018-11-01'),
+                            data: data1,
                             dataType: "json",
                             success: function (data) {
                                 console.log(data);
                                 var events = [];
                                 $.each(data, function (key, value) {
-                                    if (value.id == '1') {
+                                    if (value.holidat != null) {
                                         events.push({
                                             title: '假日',
-                                            start: new Date(Date.parse(value.projectName)),
-                                            end: new Date(Date.parse(value.projectName)),
+                                            start: new Date(Date.parse(value.holidat)),
+                                            end: new Date(Date.parse(value.holidat)),
                                             allDay: true
                                         });
 

@@ -1,11 +1,13 @@
 package com.oppo.api;
 
+import com.oppo.Entity.Holiday;
 import com.oppo.Entity.Project;
 import com.oppo.business.BookService;
 import com.oppo.dao.ProjectDao;
 import com.oppo.dto.BookDto;
 import com.oppo.dto.ProjectDto;
 import com.oppo.request.BookReq;
+import com.oppo.request.HolidayReq;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,14 +42,14 @@ public class HolidayAjaxApi {
 
 
     @RequestMapping(value = "/load", method = RequestMethod.POST)
-    public List<ProjectDto> load(@RequestBody String date) {
-        System.out.println(date.toString());
+    public List<Holiday> load(@RequestBody HolidayReq holidayReq) {
+        System.out.println(holidayReq.toString());
         //bookService.create(bookReq);
-        List list= new ArrayList<ProjectDto>();
-        ProjectDto projectDto= new ProjectDto(1,"2018-11-02");
-        ProjectDto projectDto2= new ProjectDto(1,"2018-11-12");
-        list.add(projectDto);
-        list.add(projectDto2);
+        List list= new ArrayList<Holiday>();
+        Holiday holiday= new Holiday("2018-11-02");
+        Holiday holiday2= new Holiday("2018-11-12");
+        list.add(holiday);
+        list.add(holiday2);
         return list;
     }
 
