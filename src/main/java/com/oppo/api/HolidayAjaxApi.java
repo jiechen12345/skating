@@ -1,8 +1,10 @@
 package com.oppo.api;
 
+import com.oppo.Entity.Accommodate;
 import com.oppo.Entity.Holiday;
 import com.oppo.Entity.Project;
 import com.oppo.business.BookService;
+import com.oppo.dao.AccommodateDao;
 import com.oppo.dao.HolidayDao;
 import com.oppo.dao.ProjectDao;
 import com.oppo.dto.BookDto;
@@ -45,8 +47,12 @@ public class HolidayAjaxApi {
     Logger LOGGER = LoggerFactory.getLogger(HolidayAjaxApi.class);
     @Autowired
     private HolidayDao holidayDao;
-    @Value("${holiday.defaultTitle}")
+    @Autowired
+    private AccommodateDao accommodateDao;
+    //@Value("${holiday.defaultTitle}")
     private String defaultTitle;
+    //假日代號
+    private String holidayFlag="H";
 
     @RequestMapping(value = "/load", method = RequestMethod.POST)
     public List<Holiday> load(@RequestBody HolidayReq holidayReq) {
@@ -78,7 +84,8 @@ public class HolidayAjaxApi {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String dateString = sdf.format(addDat);
         if (defaultTitle != null && !"".equals(defaultTitle)) title = defaultTitle;
-        Holiday holiday = new Holiday(dateString, title);
+        Accommodate accommodate= accommodateDao.findById(holidayFlag).get();
+        Holiday holiday = new Holiday(dateString, title,accommodate);
         holidayDao.save(holiday);
         return holiday;
 

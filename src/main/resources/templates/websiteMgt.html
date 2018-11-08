@@ -76,7 +76,7 @@
                             success: function (data) {
                                 $('#calendar').fullCalendar('renderEvent',
                                     {
-                                        title: data.title,
+                                        title: data.title+'  *'+data.accommodate.num,
                                         start: data.holidat,
                                         end: data.holidat
                                     }, true);
@@ -126,7 +126,7 @@
                                 $.each(data, function (key, value) {
                                     if (value.holidat != null) {
                                         events.push({
-                                            title: value.title != null ? value.title : '',
+                                            title: value.title+'  *'+value.accommodate.num,
                                             start: new Date(Date.parse(value.holidat)),
                                             end: new Date(Date.parse(value.holidat)),
                                             allDay: true

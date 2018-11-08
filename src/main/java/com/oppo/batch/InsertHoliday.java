@@ -3,6 +3,7 @@ package com.oppo.batch;
 /**
  * Created by JieChen on 2018/11/7.
  */
+
 import java.util.Scanner;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -18,8 +19,13 @@ import java.util.List;
  */
 
 public class InsertHoliday {
-    public static String START = "20181107";
-    public static String END = "20190430";
+    public static String START = "20181101";
+    public static String END = "20190330";
+    public static String HolidayTitle = "假日";
+    public static String FLAG = "H"; //假日代號
+    public static String FLAG2 = "N"; //平日
+    public static Integer NUM = 150; //人數
+    public static Integer NUM2 = 100;
 
 
     public static void main(String[] args) {
@@ -29,12 +35,25 @@ public class InsertHoliday {
         System.out.println("請輸入DB password：");
         String password = sc.nextLine();
         System.out.println("請輸入STARTDAT(20181101)：");
-        START = sc.nextLine();
+        if (!"".equals(sc.nextLine())) {
+            START = sc.nextLine();
+        }
         System.out.println("請輸入ENDDAT(20190330)：");
-        END = sc.nextLine();
+        if (!"".equals(sc.nextLine())) {
+            END = sc.nextLine();
+        }
+        System.out.println("假日人數(150)：");
+        if (!"".equals(sc.nextLine())) {
+            NUM = sc.nextInt();
+        }
+        System.out.println("平日人數(100)：");
+        if (!"".equals(sc.nextLine())) {
+            NUM2 = sc.nextInt();
+        }
         System.out.println("你的信息如下：");
         System.out.println("username：" + user + "\n" + "password：" + password + "\n");
         System.out.println("STARTDAT：" + START + "\n" + "ENDDAT：" + END + "\n");
+        System.out.println("假日人數：" + NUM + "\n" + "平日人數：" + NUM2 + "\n");
         //驱动程序名
         String driver = "com.mysql.jdbc.Driver";
         //String driver = "oracle.jdbc.driver.OracleDriver";
@@ -56,7 +75,8 @@ public class InsertHoliday {
             //---清空
             String truncateSql = "TRUNCATE TABLE holiday";
             statement.execute(truncateSql);
-
+            truncateSql = "TRUNCATE TABLE ACCOMMODATE";
+            statement.execute(truncateSql);
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
             Date start = sdf.parse(START);//开始时间
             Date end = sdf.parse(END);//结束时间
@@ -66,6 +86,17 @@ public class InsertHoliday {
             Date nextWorkDate;
             Date lastWorkDate;//上一个工作日
 
+            //-設定容納人數
+
+            String insertSql = "INSERT INTO ACCOMMODATE (flag,num) " +
+                    "VALUES('" + FLAG + "'," + NUM + ")";
+            System.out.println(insertSql);
+            statement.execute(insertSql);
+            insertSql = "INSERT INTO ACCOMMODATE (flag,num) " +
+                    "VALUES('" + FLAG2 + "'," + NUM2 + ")";
+            System.out.println(insertSql);
+            statement.execute(insertSql);
+            //-設定例假日
             if (!lists.isEmpty()) {
                 for (Date date : lists) {
                     Calendar cal = Calendar.getInstance();
@@ -101,8 +132,9 @@ public class InsertHoliday {
                         SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
                         String dateString = sdf2.format(nextWorkDate);
                         System.out.println(dateString);
-                        String insertSql = "INSERT INTO HOLIDAY (HOLIDAT, TITLE) " +
-                                "VALUES('" + dateString + "','" + "假日" + "')";
+                        insertSql = "INSERT INTO HOLIDAY (HOLIDAT, TITLE,ACCOMMODATE_FLAG) " +
+                                "VALUES('" + dateString + "','" + HolidayTitle + "','" + FLAG + "')";
+                        System.out.println(insertSql);
                         statement.execute(insertSql);
                     }
                 }
