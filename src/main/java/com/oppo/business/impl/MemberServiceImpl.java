@@ -52,7 +52,7 @@ public class MemberServiceImpl implements MemberService {
                                 it.getAccount(),
                                 it.getPassword(),
                                 it.getName(),
-                                it.getDepartemt().getDepName()
+                                ""
 
                         )
                 )

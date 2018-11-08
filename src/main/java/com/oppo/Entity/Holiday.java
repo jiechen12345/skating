@@ -19,6 +19,9 @@ public class Holiday {
         this.holidat = holidat;
     }
 
+    public Holiday() {
+    }
+
     public Holiday(String holidat, String title) {
         this.holidat = holidat;
         this.title = title;

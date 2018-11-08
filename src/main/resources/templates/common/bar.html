@@ -3,6 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>bar</title>
+    <!-- Bootstrap core JavaScript
+================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/static/js/popper.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+
 </head>
 <body th:inline="text">
 <!--topbar-->
@@ -11,44 +20,55 @@
     <input type="hidden" id="loginUserName" name="loginUserName" th:value="${session.loginUser.getName()}">
     <ul class="navbar-nav px-3">
         <li class="nav-item text-nowrap">
-            <a class="nav-link" style="color: #23272b"  href="/..">Sign out</a>
+            <a class="nav-link" style="color: #23272b" href="/..">Sign out</a>
         </li>
     </ul>
 </nav>
 
 <!--sidebar -->
-<nav class="col-md-2 d-none d-md-block bg-light sidebar" th:fragment="side_bar">
-    <div class="sidebar-sticky">
-        <ul class="nav flex-column">
-            <li class="nav-item">
-                <a class="nav-link active" href="/main.html" th:class="${activeUrl=='main'?'nav-link active':'nav-link'}">
-                    <span data-feather="home"></span>
-                    首頁 <span class="sr-only">(current)</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link active" href="#" th:href="@{/books}" th:class="${activeUrl=='books'?'nav-link active':'nav-link'}">
-                    <span data-feather="file-text"></span>
-                    流水帳
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link active" href="#" th:href="@{/otherMsgs}" th:class="${activeUrl=='otherMsg'?'nav-link active':'nav-link'}">
-                    <span data-feather="file-text"></span>
-                    訊息公告管理
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link active" href="#" th:href="@{/members}" th:class="${activeUrl=='members'?'nav-link active':'nav-link'}">
-                    <span data-feather="file-text"></span>
-                    會員帳號管理
-                </a>
-            </li>
+<div class="navbar-default sidebar" role="navigation">
+    <div class="sidebar-nav navbar-collapse">
+        <nav class="col-md-2 d-none d-md-block bg-light sidebar" th:fragment="side_bar">
+            <div class="sidebar-sticky">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/main.html"
+                           th:class="${activeUrl=='main'?'nav-link active':'nav-link'}">
+                            <span data-feather="home"></span>
+                            假日管理 <span class="sr-only">(current)</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/accommodate" th:href="@{/accommodate}"
+                           th:class="${activeUrl=='accommodate'?'nav-link active':'nav-link'}">
+                            <span data-feather="file-text"></span>
+                            開放人數管理
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#" th:href="@{/otherMsgs}"
+                           th:class="${activeUrl=='otherMsg'?'nav-link active':'nav-link'}">
+                            <span data-feather="file-text"></span>
+                            訊息公告管理
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#" th:href="@{/members}"
+                           th:class="${activeUrl=='members'?'nav-link active':'nav-link'}">
+                            <span data-feather="file-text"></span>
+                            會員帳號管理
+                        </a>
+                    </li>
 
-        </ul>
+                </ul>
+            </div>
+        </nav>
     </div>
-</nav>
+</div>
 <!-- 侧边栏结束 -->
 
 </body>
+
+
+
 </html>

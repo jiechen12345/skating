@@ -5,14 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="../../../../favicon.ico">
 
     <title>假日管理</title>
-    <link href="/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet"/>
 
     <!-- Custom styles for this tmemberlate -->
-    <link href="/css/dashboard.css" rel="stylesheet"/>
-    <link href="/css/bootstrap-table.css" rel="stylesheet">
+    <link href="../static/css/dashboard.css" rel="stylesheet"/>
+    <link href="../static/css/bootstrap-table.css" rel="stylesheet">
     <!-- jQuery v1.9.1 -->
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
     <!-- Moment.js v2.20.0 -->
@@ -27,7 +26,7 @@
             background-color: #DDDDDD;
         }
 
-        æ</style>
+    </style>
 </head>
 
 <body>
@@ -65,15 +64,48 @@
                     eventBackgroundColor: "#FF6666",
 
                     dayClick: function (date, event, view) {
-                        console.log('add event');
-                        console.log(date._d);
+                        // console.log('add event');
+                        var data1 = JSON.stringify(date._d);
+                        $.ajax({
+                            url: "holiday/add",
+                            async: true,
+                            contentType: 'application/json; charset=UTF-8',
+                            type: "POST",
+                            data: data1,
+                            dataType: "json",
+                            success: function (data) {
+                                $('#calendar').fullCalendar('renderEvent',
+                                    {
+                                        title: data.title,
+                                        start: data.holidat,
+                                        end: data.holidat
+                                    }, true);
+                            },
+                            error: function (err) {
+                                console.log('err: ' + err)
+                                location.reload();
+                            }
+                        });
 
                     },
                     eventClick: function (date, event, view) {
-                        console.log('modify event');
-                        console.log(date);
-                        console.log(date.start._i);
-
+                        // console.log('delete event');
+                        // console.log(date.start._i);
+                        var data1 = JSON.stringify(date.start._i);
+                        $.ajax({
+                            url: "holiday/remove",
+                            async: true,
+                            contentType: 'application/json; charset=UTF-8',
+                            type: "DELETE",
+                            data: data1,
+                            success: function () {
+                                $('#calendar').fullCalendar('removeEvents', date._id);
+                            },
+                            error: function (err) {
+                                console.log('err: ' + err)
+                                location.reload();
+                            }
+                        });
                     },
                     events: function (start, end, timezone, callback) {
                         var startDat = start.format('YYYY-MM-DD');
@@ -81,17 +113,20 @@
                         var data1 = JSON.stringify({"startDat": startDat, "endDat": endDat});
                         $.ajax({
                             url: "holiday/load",
+                            async: true,
                             contentType: 'application/json; charset=UTF-8',
                             type: "POST",
                             data: data1,
                             dataType: "json",
                             success: function (data) {
-                                console.log(data);
+                                $('#calendar').fullCalendar('removeEvents', function (calEvent) {
+                                    return true;
+                                });
                                 var events = [];
                                 $.each(data, function (key, value) {
                                     if (value.holidat != null) {
                                         events.push({
-                                            title: '假日',
+                                            title: value.title != null ? value.title : '',
                                             start: new Date(Date.parse(value.holidat)),
                                             end: new Date(Date.parse(value.holidat)),
                                             allDay: true
@@ -110,8 +145,8 @@
                                 });
                                 callback(events);
                             },
-                            error: function () {
-
+                            error: function (err) {
+                                console.log('err: ' + err)
                             }
                         });
                     },
@@ -127,21 +162,10 @@
         </main>
     </div>
 </div>
-
-<!-- Bootstrap core JavaScript
-================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
-<script src="/js/popper.min.js"></script>
-<script src="/js/bootstrap.min.js"></script>
-<script src="https://code.highcharts.com/highcharts.js"></script>
-<script src="https://code.highcharts.com/modules/exporting.js"></script>
-<script src="https://code.highcharts.com/modules/export-data.js"></script>
-
 <!-- Icons -->
 <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
 <script>
     feather.replace()
 </script>
-
 </body>
 </html>
