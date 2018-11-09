@@ -8,10 +8,7 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="/static/js/popper.min.js"></script>
     <script src="/static/js/bootstrap.min.js"></script>
-    <script src="https://code.highcharts.com/highcharts.js"></script>
-    <script src="https://code.highcharts.com/modules/exporting.js"></script>
-    <script src="https://code.highcharts.com/modules/export-data.js"></script>
-
+    <link href="../static/css/dashboard.css" rel="stylesheet"/>
 </head>
 <body th:inline="text">
 <!--topbar-->
@@ -34,28 +31,28 @@
                     <li class="nav-item">
                         <a class="nav-link active" href="/main.html"
                            th:class="${activeUrl=='main'?'nav-link active':'nav-link'}">
-                            <span data-feather="home"></span>
+                            <span data-feather="calendar"></span>
                             假日管理 <span class="sr-only">(current)</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link active" href="/accommodate" th:href="@{/accommodate}"
                            th:class="${activeUrl=='accommodate'?'nav-link active':'nav-link'}">
-                            <span data-feather="file-text"></span>
+                            <span data-feather="users"></span>
                             開放人數管理
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#" th:href="@{/otherMsgs}"
-                           th:class="${activeUrl=='otherMsg'?'nav-link active':'nav-link'}">
-                            <span data-feather="file-text"></span>
-                            訊息公告管理
-                        </a>
-                    </li>
+                    <!--<li class="nav-item">-->
+                        <!--<a class="nav-link active" href="#" th:href="@{/otherMsgs}"-->
+                           <!--th:class="${activeUrl=='otherMsg'?'nav-link active':'nav-link'}">-->
+                            <!--<span data-feather="file-text"></span>-->
+                            <!--訊息公告管理-->
+                        <!--</a>-->
+                    <!--</li>-->
                     <li class="nav-item">
                         <a class="nav-link active" href="#" th:href="@{/members}"
                            th:class="${activeUrl=='members'?'nav-link active':'nav-link'}">
-                            <span data-feather="file-text"></span>
+                            <span data-feather="slack"></span>
                             會員帳號管理
                         </a>
                     </li>
@@ -66,9 +63,5 @@
     </div>
 </div>
 <!-- 侧边栏结束 -->
-
 </body>
-
-
-
 </html>

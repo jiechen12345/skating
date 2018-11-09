@@ -25,6 +25,9 @@
             background-color: #DDDDDD;
         }
 
+        .fc-title {
+            font-size: 1.0rem;
+        }
 
     </style>
 </head>
@@ -45,16 +48,20 @@
                 var Today = new Date();
                 var now = Today.getFullYear() + "-" + (Today.getMonth() + 1) + "-" + Today.getDate();
                 $("#calendar").fullCalendar({
-                    themeSystem: 'standard',
+                    themeSystem: "standard",
                     // 參數設定[註1]
                     header: {
                         left: '',
                         center: 'title',
                         right: 'prev,next today'
                     },
-
-                    monthNames: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
-                    monthNamesShort: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+                    buttonText: {
+                        today: 'Today',
+                        prev: '<',
+                        next: '>',
+                    },
+                    monthNames: ["Jan.", "Feb.", "Mar.", "Apr.", "May.", "June.", "July.", "Aug.", "Sept.", "Oct.", "Nov.", "Dec."],
+                    monthNamesShort: ["Jan.", "Feb.", "Mar.", "Apr.", "May.", "June.", "July.", "Aug.", "Sept.", "Oct.", "Nov.", "Dec."],
                     dayNames: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
                     dayNamesShort: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
                     defaultDate: now, // 起始日期navLinks: true, // can click day/week names to navigate views
@@ -63,8 +70,8 @@
                     editable: true,
                     eventLimit: true, // allow "more" link when too many events
                     eventStartEditable: false,
-                    eventBackgroundColor: "#FF6666",
-
+                    eventBackgroundColor: "#ffadad",
+                    eventColor: "#17A2B8",
                     dayClick: function (date, event, view) {
                         // console.log('add event');
                         var data1 = JSON.stringify(date._d);
@@ -78,7 +85,7 @@
                             success: function (data) {
                                 $('#calendar').fullCalendar('renderEvent',
                                     {
-                                        title: '  開放人數: '+data.accommodate.num,
+                                        title: '  開放人數: ' + data.accommodate.num,
                                         start: data.holidat,
                                         end: data.holidat
                                     }, true);
@@ -128,7 +135,7 @@
                                 $.each(data, function (key, value) {
                                     if (value.holidat != null) {
                                         events.push({
-                                            title: '  開放人數: '+value.accommodate.num,
+                                            title: '  開放人數: ' + value.accommodate.num,
                                             start: new Date(Date.parse(value.holidat)),
                                             end: new Date(Date.parse(value.holidat)),
                                             allDay: true

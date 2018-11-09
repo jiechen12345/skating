@@ -96,13 +96,17 @@ public class HolidayAjaxApi {
     public void remove(@RequestBody Date removeDat) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String dateString = sdf.format(removeDat);
-        Holiday holiday = holidayDao.findById(dateString).get();
-        Optional<Accommodate> optional=accommodateDao.findById(dateString);
+        Optional<Holiday> optional = holidayDao.findById(dateString);
         if (optional.isPresent()) {
-            Accommodate accommodate = optional.get();
+            Holiday holiday = optional.get();
+            holidayDao.delete(holiday);
+        }
+        Optional<Accommodate> optional2 = accommodateDao.findById(dateString);
+        if (optional2.isPresent()) {
+            Accommodate accommodate = optional2.get();
             accommodateDao.delete(accommodate);
         }
-        holidayDao.delete(holiday);
+
     }
 
 

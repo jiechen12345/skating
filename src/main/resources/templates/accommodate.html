@@ -76,22 +76,22 @@
                                            onkeyup="value=value.replace(/[^\d]/g,'') "/>
                                 </div>
                                 <div class="col-md mb-0">
-                                    <label for="specialDat">修改特定日期人數</label>
-                                    <input id='specialDat' name="specialDat" type="text"
-                                           class="form-control datetimepickerDat">
+                                    <label for="specialDat">修改特定日期＆人數</label>
+                                    <input id='specialDat' name="specialDat" type="text" placeholder="2018-12-30"
+                                           class="form-control datetimepickerDat"　>
                                     <div class="clearfix"></div>
                                     <input id='specialDayNum' name="specialDayNum" type="text"
-                                           class="form-control ">
+                                           class="form-control "　>
                                     <div class="clearfix"></div>
                                 </div>
                             </form>
                         </div>
                         <div class="modal-footer">
-                            <button class="btn btn-secondary" onclick="location.reload();" id="reset" name="reset"
-                                    type="button">取消
-                            </button>
                             <button type="button" class="btn btn-default btn-success" data-dismiss="modal"
                                     th:onclick="'javascript:save()'">Save
+                            </button>
+                            <button class="btn btn-secondary" onclick="location.reload();" id="reset" name="reset"
+                                    type="button">Cancel
                             </button>
                         </div>
                     </div>
@@ -104,12 +104,10 @@
 </div>
 
 <!-- Icons -->
-<script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
 <script src="../static/js/bootstrap-datetimepicker.min.js"></script>
 <script src="../static/js/bootstrap-datetimepicker.js"></script>
 <script src="../static/js/bootstrap-datetimepicker.zh-TW.js"></script>
 <script>
-    feather.replace();
 
     function save() {
         var normaldayNum = $('#normaldayNum').val();
@@ -185,6 +183,10 @@
         alert(msg);
     }
 </script>
-
+<!-- Icons -->
+<script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
+<script>
+    feather.replace()
+</script>
 </body>
 </html>
