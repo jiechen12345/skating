@@ -52,7 +52,8 @@ public class HolidayAjaxApi {
     //@Value("${holiday.defaultTitle}")
     private String defaultTitle;
     //假日代號
-    private String holidayFlag="H";
+    @Value("${accommodate.holidayFlag}")
+    private String holidayFlag;
 
     @RequestMapping(value = "/load", method = RequestMethod.POST)
     public List<Holiday> load(@RequestBody HolidayReq holidayReq) {
@@ -84,8 +85,8 @@ public class HolidayAjaxApi {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String dateString = sdf.format(addDat);
         if (defaultTitle != null && !"".equals(defaultTitle)) title = defaultTitle;
-        Accommodate accommodate= accommodateDao.findById(holidayFlag).get();
-        Holiday holiday = new Holiday(dateString, title,accommodate);
+        Accommodate accommodate = accommodateDao.findById(holidayFlag).get();
+        Holiday holiday = new Holiday(dateString, title, accommodate);
         holidayDao.save(holiday);
         return holiday;
 
@@ -96,6 +97,11 @@ public class HolidayAjaxApi {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String dateString = sdf.format(removeDat);
         Holiday holiday = holidayDao.findById(dateString).get();
+        Optional<Accommodate> optional=accommodateDao.findById(dateString);
+        if (optional.isPresent()) {
+            Accommodate accommodate = optional.get();
+            accommodateDao.delete(accommodate);
+        }
         holidayDao.delete(holiday);
     }
 

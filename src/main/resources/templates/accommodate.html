@@ -9,8 +9,10 @@
     <link rel="stylesheet" href="../static/css/bootstrap-datetimepicker.min.css" media="screen"/>
     <link rel="stylesheet" href="../static/css/bootstrap-datetimepicker.css" media="screen"/>
     <title>開放人數管理</title>
+    <!-- Bootstrap core CSS -->
     <link href="../static/css/bootstrap.min.css" rel="stylesheet"/>
-
+    <link href="../static/css/bootstrap-jie.css" rel="stylesheet"/>
+    <link href="../static/css/bootstrap-table.css" rel="stylesheet">
     <!-- Custom styles for this tmemberlate -->
     <link href="../static/css/dashboard.css" rel="stylesheet"/>
     <link href="../static/css/bootstrap-table.css" rel="stylesheet">
@@ -19,6 +21,30 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.0/moment.min.js"></script>
     <script src="../static/js/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
     <!--<script src="../static/js/moment.js" crossorigin="anonymous"></script>-->
+    <script>
+
+        /**
+         * toast 小提示框
+         * @param tipTxt 提示内容
+         */
+        function popToast(tipTxt) {
+            var $popToast = $(".pop-toast");
+            $popToast.remove();
+            var popToastHtml = '<div class="pop-toast">\n' +
+                '            <p class="toast-tip">' + tipTxt + '</p>\n' +
+                '        </div>';
+            $popToast = $(popToastHtml);
+            $("body").append($popToast);
+            setTimeout(function () {
+                $popToast.fadeOut();
+            }, 1000);
+        }
+    </script>
+    <style>
+        .pop-toast {
+            max-width: 35%;
+        }
+    </style>
 </head>
 
 <body>
@@ -38,21 +64,23 @@
                                 <div class="col-md mb-0">
                                     <label for="normaldayNum">平日開放人數</label>
                                     <input name="normaldayNum" id="normaldayNum" maxlength="3" size="3" type="text"
+                                           th:value="${normaldayNum!=null}?${normaldayNum}"
                                            class="form-control"
-                                           onkeyup="value=value.replace(/[^\d]/g,'') " required>
+                                           onkeyup="value=value.replace(/[^\d]/g,'') "/>
                                 </div>
                                 <div class="col-md mb-0">
                                     <label for="holidayNum">假日開放人數</label>
                                     <input name="holidayNum" id="holidayNum" maxlength="3" size="3" type="text"
+                                           th:value="${holidayNum!=null}?${holidayNum}"
                                            class="form-control"
-                                           onkeyup="value=value.replace(/[^\d]/g,'') " required>
+                                           onkeyup="value=value.replace(/[^\d]/g,'') "/>
                                 </div>
                                 <div class="col-md mb-0">
                                     <label for="specialDat">修改特定日期人數</label>
                                     <input id='specialDat' name="specialDat" type="text"
                                            class="form-control datetimepickerDat">
                                     <div class="clearfix"></div>
-                                    <input id='specialDatNum' name="specialDatNum" type="text"
+                                    <input id='specialDayNum' name="specialDayNum" type="text"
                                            class="form-control ">
                                     <div class="clearfix"></div>
                                 </div>
@@ -63,7 +91,7 @@
                                     type="button">取消
                             </button>
                             <button type="button" class="btn btn-default btn-success" data-dismiss="modal"
-                                    th:onclick="'javascript:sendAddMember()'">Save
+                                    th:onclick="'javascript:save()'">Save
                             </button>
                         </div>
                     </div>
@@ -82,6 +110,49 @@
 <script src="../static/js/bootstrap-datetimepicker.zh-TW.js"></script>
 <script>
     feather.replace();
+
+    function save() {
+        var normaldayNum = $('#normaldayNum').val();
+        var holidayNum = $('#holidayNum').val();
+        var specialDat = $('#specialDat').val();
+        console.log(specialDat);
+        var specialDayNum = $('#specialDayNum').val();
+        console.log(specialDayNum);
+        if (normaldayNum == '') {
+            popToast("請設定平日開放人數 ！");
+            $('#normaldayNum').focus();
+
+            return;
+        } else if (holidayNum == '') {
+            popToast("請設定假日開放人數 ！");
+            $('#holidayNum').focus();
+            return;
+        }else if(specialDat!=''&&specialDayNum==''){
+            popToast("請設定特定日期開放人數或者不指定特定日期");
+            $('#specialDayNum').focus();
+            return;
+        }else if(specialDat==''&&specialDayNum!=''){
+            popToast("請設定特定日期或者不設定特定日期開放人數");
+            $('#specialDat').focus();
+            return;
+        } else {
+            $.ajax({
+                contentType: 'application/json; charset=UTF-8',
+                type: "post",
+                data: JSON.stringify({'normaldayNum': normaldayNum,'holidayNum': holidayNum,'specialDat':specialDat,'specialDayNum':specialDayNum}) ,
+                async: false,
+                url: "/accommodate/save",
+                success: function (data) {
+                    popToast("存 檔 完 成 ！");
+                    setTimeout("location.reload()", 900);
+                },
+                error: function (jqXHR, exception) {
+                    ajaxError(jqXHR, exception);
+                },
+            });
+        }
+    }
+
     $(".datetimepickerDat").datetimepicker({
         startView: 2,
         minView: 2,
@@ -91,6 +162,28 @@
         format: 'yyyy-mm-dd',
         language: 'zh-TW'
     });
+
+    function ajaxError(jqXHR, exception) {
+        var msg = '';
+        if (jqXHR.status === 0) {
+            msg = 'Not connect.\n Verify Network.';
+        } else if (jqXHR.status == 404) {
+            msg = 'Requested page not found. [404]';
+        } else if (jqXHR.status == 500) {
+            msg = 'Internal Server Error [500].';
+        } else if (exception === 'parsererror') {
+            msg = 'Requested JSON parse failed.';
+        } else if (exception === 'timeout') {
+            msg = 'Time out error.';
+        } else if (exception === 'abort') {
+            msg = 'Ajax request aborted.';
+        } else {
+            msg = 'Uncaught Error.\n' + jqXHR.responseText;
+        }
+        alert('seession= ')
+        alert("\''+[[${session.loginUser.getName()}]]+'\'");
+        alert(msg);
+    }
 </script>
 
 </body>

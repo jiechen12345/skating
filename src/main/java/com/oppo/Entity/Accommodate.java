@@ -9,6 +9,14 @@ import javax.persistence.Id;
  */
 @Entity
 public class Accommodate {
+    public Accommodate() {
+    }
+
+    public Accommodate(String flag, Integer num) {
+        this.flag = flag;
+        this.num = num;
+    }
+
     @Id
     @Column(length = 10)
     private String flag;

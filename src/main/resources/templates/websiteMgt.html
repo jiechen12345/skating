@@ -16,15 +16,15 @@
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
     <!-- Moment.js v2.20.0 -->
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.0/moment.min.js"></script>
-    <!-- FullCalendar v3.8.1 -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.8.1/fullcalendar.min.css" rel="stylesheet"/>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.8.1/fullcalendar.print.css" rel="stylesheet"
-          media="print">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.8.1/fullcalendar.min.js"></script>
+    <!-- FullCalendar v3.9 -->
+    <link href="../static/fullcalendar/fullcalendar.min.css" rel="stylesheet"/>
+    <link href="../static/fullcalendar/fullcalendar.print.css" rel="stylesheet" media="print"/>
+    <script src="../static/fullcalendar/fullcalendar.min.js" rel="stylesheet"></script>
     <style>
         th {
             background-color: #DDDDDD;
         }
+
 
     </style>
 </head>
@@ -45,12 +45,14 @@
                 var Today = new Date();
                 var now = Today.getFullYear() + "-" + (Today.getMonth() + 1) + "-" + Today.getDate();
                 $("#calendar").fullCalendar({
+                    themeSystem: 'standard',
                     // 參數設定[註1]
                     header: {
                         left: '',
                         center: 'title',
                         right: 'prev,next today'
                     },
+
                     monthNames: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
                     monthNamesShort: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
                     dayNames: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
@@ -76,7 +78,7 @@
                             success: function (data) {
                                 $('#calendar').fullCalendar('renderEvent',
                                     {
-                                        title: data.title+'  *'+data.accommodate.num,
+                                        title: '  開放人數: '+data.accommodate.num,
                                         start: data.holidat,
                                         end: data.holidat
                                     }, true);
@@ -126,7 +128,7 @@
                                 $.each(data, function (key, value) {
                                     if (value.holidat != null) {
                                         events.push({
-                                            title: value.title+'  *'+value.accommodate.num,
+                                            title: '  開放人數: '+value.accommodate.num,
                                             start: new Date(Date.parse(value.holidat)),
                                             end: new Date(Date.parse(value.holidat)),
                                             allDay: true
