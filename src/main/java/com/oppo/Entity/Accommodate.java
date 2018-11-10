@@ -6,6 +6,7 @@ import javax.persistence.Id;
 
 /**
  * Created by JieChen on 2018/11/9.
+ * 開放人數
  */
 @Entity
 public class Accommodate {
@@ -17,8 +18,9 @@ public class Accommodate {
         this.num = num;
     }
 
+    //2018-11-11-2
     @Id
-    @Column(length = 10)
+    @Column(length = 12)
     private String flag;
 
     private Integer num;

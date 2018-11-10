@@ -26,6 +26,8 @@ public class InsertHoliday {
     public static String FLAG2 = "N"; //平日
     public static Integer NUM = 150; //人數
     public static Integer NUM2 = 100;
+    public static String[]  sessionName = {"假日及寒假加開場次", "第一場", "第二場", "第三場"};
+    public static String[] sessionTime = {"14:00-15:30", "16:00-17:30", "18:00-19:30", "20:00-21:30"};
 
 
     public static void main(String[] args) {
@@ -77,6 +79,8 @@ public class InsertHoliday {
             statement.execute(truncateSql);
             truncateSql = "TRUNCATE TABLE ACCOMMODATE";
             statement.execute(truncateSql);
+            truncateSql = "TRUNCATE TABLE SESSIONS";
+            statement.execute(truncateSql);
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
             Date start = sdf.parse(START);//开始时间
             Date end = sdf.parse(END);//结束时间
@@ -126,7 +130,18 @@ public class InsertHoliday {
 
                     // System.out.println(year+","+monthStr+","+dayStr+","+sdf.format(date));
 //                    System.out.println(insertSql);
-
+                    if (isHoliday(date) == 0) {
+                        nextWorkDate = date;
+                        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
+                        String dateString = sdf2.format(nextWorkDate);
+                        System.out.println(dateString);
+                        for (int i = 1; i <= 3; i++) {
+                            insertSql = "insert into sessions (dat,reserved,sessions_name,sessions_time,accommodate_flag)\n" +
+                                    "VALUES('" +dateString+ "'," +0+ ",'"+sessionName[i]+ "','" +sessionTime[i]+ "','" +FLAG2+ "')"; //123
+                            System.out.println("平日 " + insertSql);
+                            statement.execute(insertSql);
+                        }
+                    }
                     if (isHoliday(date) != 0) {
                         nextWorkDate = date;
                         SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
@@ -134,8 +149,15 @@ public class InsertHoliday {
                         System.out.println(dateString);
                         insertSql = "INSERT INTO HOLIDAY (HOLIDAT, TITLE,ACCOMMODATE_FLAG) " +
                                 "VALUES('" + dateString + "','" + HolidayTitle + "','" + FLAG + "')";
-                        System.out.println(insertSql);
                         statement.execute(insertSql);
+                        for (int i = 0; i <= 3; i++) {
+                            insertSql = "insert into sessions (dat,reserved,sessions_name,sessions_time,accommodate_flag)\n" +
+                                    "VALUES('" +dateString+ "'," +0+ ",'"+sessionName[i]+ "','" +sessionTime[i]+ "','" +FLAG+ "')"; //123
+                            System.out.println("假日 " + insertSql);
+                            statement.execute(insertSql);
+                        }
+
+
                     }
                 }
             }
