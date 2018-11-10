@@ -76,7 +76,7 @@
                                            onkeyup="value=value.replace(/[^\d]/g,'') "/>
                                 </div>
                                 <div class="col-md mb-0">
-                                    <label for="specialDat">修改特定日期＆人數</label>
+                                    <label for="specialDat">追加特定日期＆人數</label>
                                     <input id='specialDat' name="specialDat" type="text" placeholder="2018-12-30"
                                            class="form-control datetimepickerDat"　>
                                     <div class="clearfix"></div>
@@ -126,11 +126,11 @@
             $('#holidayNum').focus();
             return;
         }else if(specialDat!=''&&specialDayNum==''){
-            popToast("請設定特定日期開放人數或者不指定特定日期");
+            popToast("請設定特定日期追加人數或者不指定特定日期");
             $('#specialDayNum').focus();
             return;
         }else if(specialDat==''&&specialDayNum!=''){
-            popToast("請設定特定日期或者不設定特定日期開放人數");
+            popToast("請設定特定日期或者不設定特定日期追加人數");
             $('#specialDat').focus();
             return;
         } else {

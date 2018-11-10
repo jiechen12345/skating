@@ -2,9 +2,11 @@ package com.oppo.api;
 
 import com.oppo.Entity.Accommodate;
 import com.oppo.Entity.Holiday;
+import com.oppo.Entity.Sessions;
 import com.oppo.common.Common;
 import com.oppo.dao.AccommodateDao;
 import com.oppo.dao.HolidayDao;
+import com.oppo.dao.SessionsDao;
 import com.oppo.dto.MemberDto;
 import com.oppo.request.AccommodateReq;
 import com.oppo.request.MemberReq;
@@ -32,6 +34,8 @@ public class AccommodateAjaxApi {
     private AccommodateDao accommodateDao;
     @Autowired
     private HolidayDao holidayDao;
+    @Autowired
+    private SessionsDao sessionsDao;
     //平日代號
     @Value("${accommodate.normaldayFlag}")
     private String normaldayFlag;
@@ -39,7 +43,7 @@ public class AccommodateAjaxApi {
     @Value("${accommodate.holidayFlag}")
     private String holidayFlag;
     //特別日的描述
-    private String SpecialdayTitle="特";
+    private String SpecialdayTitle = "特";
 
     //存檔
     @RequestMapping(value = "/save", method = RequestMethod.POST)
@@ -55,11 +59,18 @@ public class AccommodateAjaxApi {
         String spDat = Common.get(accommodateReq.getSpecialDat());
         Integer spNum = Common.get(accommodateReq.getSpecialDayNum());
         if (!"".equals(spDat) && 0 != spNum) {
-            Accommodate SpecialdayAccommodate = new Accommodate(spDat, spNum);
-            accommodateDao.saveAndFlush(SpecialdayAccommodate);
-            //一併加入日曆
-            Holiday holiday = new Holiday(spDat, SpecialdayTitle, SpecialdayAccommodate);
-            holidayDao.save(holiday);
+//            Accommodate SpecialdayAccommodate = new Accommodate(spDat, spNum);
+//            accommodateDao.saveAndFlush(SpecialdayAccommodate);
+//            //一併加入日曆
+//            Holiday holiday = new Holiday(spDat, SpecialdayTitle, SpecialdayAccommodate);
+//            holidayDao.save(holiday);
+            //修改'當天所有'場次場次容納人數
+            List<Sessions> sessionsList = sessionsDao.findAllByDat(spDat);
+            System.out.println(sessionsList);
+            for(Sessions sessions:sessionsList) {
+                sessions.setExtra(spNum);
+                sessionsDao.saveAndFlush(sessions);
+            }
         }
 
 

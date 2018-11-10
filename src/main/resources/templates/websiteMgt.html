@@ -11,6 +11,7 @@
 
     <!-- Custom styles for this tmemberlate -->
     <link href="../static/css/dashboard.css" rel="stylesheet"/>
+    <link href="../static/css/bootstrap-jie.css" rel="stylesheet"/>
     <link href="../static/css/bootstrap-table.css" rel="stylesheet">
     <!-- jQuery v1.9.1 -->
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
@@ -26,10 +27,33 @@
         }
 
         .fc-title {
-            font-size: 1.0rem;
+            font-size: 0.85rem;
         }
 
+        .pop-toast {
+            max-width: 35%;
+            background: darkred;
+        }
     </style>
+    <script>
+
+        /**
+         * toast 小提示框
+         * @param tipTxt 提示内容
+         */
+        function popToast(tipTxt) {
+            var $popToast = $(".pop-toast");
+            $popToast.remove();
+            var popToastHtml = '<div class="pop-toast">\n' +
+                '            <p class="toast-tip">' + tipTxt + '</p>\n' +
+                '        </div>';
+            $popToast = $(popToastHtml);
+            $("body").append($popToast);
+            setTimeout(function () {
+                $popToast.fadeOut();
+            }, 1000);
+        }
+    </script>
 </head>
 
 <body>
@@ -70,10 +94,11 @@
                     editable: true,
                     eventLimit: true, // allow "more" link when too many events
                     eventStartEditable: false,
-                    eventBackgroundColor: "#ffadad",
+                    eventBackgroundColor: "#cce8cf",
                     eventColor: "#17A2B8",
+                    timeFormat: 'H:mm',
                     dayClick: function (date, event, view) {
-                        // console.log('add event');
+                        console.log('add event');
                         var data1 = JSON.stringify(date._d);
                         $.ajax({
                             url: "holiday/add",
@@ -83,23 +108,30 @@
                             data: data1,
                             dataType: "json",
                             success: function (data) {
-                                $('#calendar').fullCalendar('renderEvent',
-                                    {
-                                        title: '  開放人數: ' + data.accommodate.num,
-                                        start: data.holidat,
-                                        end: data.holidat
-                                    }, true);
+                                console.log(data);
+                                if (data.extra != 9999) {
+                                    alert(1);
+                                    var n = data.accommodate.num + data.extra;
+                                    $('#calendar').fullCalendar('renderEvent',
+                                        {
+                                            title: '  開放人數: ' + n,
+                                            start: new Date(Date.parse(data.dat + ' ' + data.startTime)),
+                                            end: new Date(Date.parse(data.dat + ' ' + data.endTime)),
+                                        }, true);
+                                } else {
+                                    popToast("每天開放場次不超過四場!");
+                                }
                             },
                             error: function (err) {
-                                console.log('err: ' + err)
-                                location.reload();
+                                console.log(err)
                             }
                         });
 
                     },
                     eventClick: function (date, event, view) {
-                        // console.log('delete event');
-                        // console.log(date.start._i);
+                         console.log('delete event');
+                         console.log(date);
+                         console.log(event);
                         var data1 = JSON.stringify(date.start._i);
                         $.ajax({
                             url: "holiday/remove",
@@ -111,8 +143,8 @@
                                 $('#calendar').fullCalendar('removeEvents', date._id);
                             },
                             error: function (err) {
-                                console.log('err: ' + err)
-                                location.reload();
+                                console.log(err)
+
                             }
                         });
                     },
@@ -131,14 +163,18 @@
                                 $('#calendar').fullCalendar('removeEvents', function (calEvent) {
                                     return true;
                                 });
+                                console.log(data);
                                 var events = [];
                                 $.each(data, function (key, value) {
-                                    if (value.holidat != null) {
+                                    if (value.dat != null) {
+                                        var n = value.accommodate.num + value.extra;
                                         events.push({
-                                            title: '  開放人數: ' + value.accommodate.num,
-                                            start: new Date(Date.parse(value.holidat)),
-                                            end: new Date(Date.parse(value.holidat)),
-                                            allDay: true
+                                            title: '  開放人數: ' + n,
+                                            start: new Date(Date.parse(value.dat + ' ' + value.startTime)),
+                                            //start: new Date(Date.parse(s)),
+                                            end: new Date(Date.parse(value.dat + ' ' + value.endTime)),
+                                            //end: new Date(Date.parse(s2)),
+                                            //allDay: true
                                         });
 
                                     }

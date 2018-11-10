@@ -7,6 +7,22 @@ import javax.persistence.*;
  */
 @Entity
 public class Sessions {
+    public Sessions() {
+    }
+
+    public Sessions(String dat, String sessionsName, String startTime, String endTime, Accommodate accommodate, Integer reserved, Integer extra) {
+        this.dat = dat;
+        this.sessionsName = sessionsName;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.accommodate = accommodate;
+        this.reserved = reserved;
+        this.extra = extra;
+    }
+
+    public Sessions(Integer extra) {
+        this.extra = extra;
+    }
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
@@ -17,13 +33,18 @@ public class Sessions {
     @Column( nullable = false )
     private String sessionsName;
     @Column( nullable = false )
-    private String sessionsTime;
+    private String startTime;
+    @Column( nullable = false )
+    private String endTime;
     //開放人數，如果場次要能個別設定放人數在進去Accommodate裡面加id改150
     @ManyToOne(targetEntity = Accommodate.class)
     private Accommodate accommodate;
     //已預約人數
     @Column( nullable = false )
     private Integer reserved = 0;
+    //已預約人數
+    @Column( nullable = false )
+    private Integer extra = 0;
 
     public Integer getId() {
         return id;
@@ -38,7 +59,7 @@ public class Sessions {
     }
 
     public void setDat(String dat) {
-        dat = dat;
+        this.dat = dat;
     }
 
     public String getSessionsName() {
@@ -65,12 +86,24 @@ public class Sessions {
         this.reserved = reserved;
     }
 
-    public String getSessionsTime() {
-        return sessionsTime;
+    public String getStartTime() {
+        return startTime;
     }
 
-    public void setSessionsTime(String sessionsTime) {
-        this.sessionsTime = sessionsTime;
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
+    public Integer getExtra() {
+        return extra;
     }
 
     @Override
@@ -79,9 +112,16 @@ public class Sessions {
                 "id=" + id +
                 ", dat='" + dat + '\'' +
                 ", sessionsName='" + sessionsName + '\'' +
-                ", sessionsTime='" + sessionsTime + '\'' +
+                ", startTime='" + startTime + '\'' +
+                ", endTime='" + endTime + '\'' +
                 ", accommodate=" + accommodate +
                 ", reserved=" + reserved +
+                ", extra=" + extra +
                 '}';
     }
+
+    public void setExtra(Integer extra) {
+        this.extra = extra;
+    }
+
 }
