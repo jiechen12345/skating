@@ -65,7 +65,7 @@ public class HolidayAjaxApi {
 
     @RequestMapping(value = "/load", method = RequestMethod.POST)
     public List<Sessions> load(@RequestBody HolidayReq holidayReq) {
-        System.out.println(holidayReq.toString());
+        //System.out.println(holidayReq.toString());
         //bookService.create(bookReq);
         List<Sessions> SessionsList = sessionsDao.findAll((root, query, cb) -> {
             //query.groupBy(root.get("dat"));
