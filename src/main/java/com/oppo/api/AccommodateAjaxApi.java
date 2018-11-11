@@ -2,12 +2,14 @@ package com.oppo.api;
 
 import com.oppo.Entity.Accommodate;
 import com.oppo.Entity.Holiday;
+import com.oppo.Entity.Project;
 import com.oppo.Entity.Sessions;
 import com.oppo.common.Common;
 import com.oppo.dao.AccommodateDao;
 import com.oppo.dao.HolidayDao;
 import com.oppo.dao.SessionsDao;
 import com.oppo.dto.MemberDto;
+import com.oppo.dto.ProjectDto;
 import com.oppo.request.AccommodateReq;
 import com.oppo.request.MemberReq;
 import org.slf4j.Logger;
@@ -22,6 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Created by JieChen on 2018/11/9.
@@ -32,8 +36,6 @@ public class AccommodateAjaxApi {
     Logger LOGGER = LoggerFactory.getLogger(AccommodateAjaxApi.class);
     @Autowired
     private AccommodateDao accommodateDao;
-    @Autowired
-    private HolidayDao holidayDao;
     @Autowired
     private SessionsDao sessionsDao;
     //平日代號
@@ -58,22 +60,32 @@ public class AccommodateAjaxApi {
         //----特別日
         String spDat = Common.get(accommodateReq.getSpecialDat());
         Integer spNum = Common.get(accommodateReq.getSpecialDayNum());
-        if (!"".equals(spDat) && 0 != spNum) {
-//            Accommodate SpecialdayAccommodate = new Accommodate(spDat, spNum);
-//            accommodateDao.saveAndFlush(SpecialdayAccommodate);
-//            //一併加入日曆
-//            Holiday holiday = new Holiday(spDat, SpecialdayTitle, SpecialdayAccommodate);
-//            holidayDao.save(holiday);
-            //修改'當天所有'場次場次容納人數
-            List<Sessions> sessionsList = sessionsDao.findAllByDat(spDat);
-            System.out.println(sessionsList);
-            for(Sessions sessions:sessionsList) {
-                sessions.setExtra(spNum);
-                sessionsDao.saveAndFlush(sessions);
+        Integer sessionsId = Common.get(accommodateReq.getSessionsId());
+        if (!"".equals(spDat) && 0 != spNum && sessionsId != null) {
+            if (sessionsId != 0) {
+                Optional<Sessions> optional = sessionsDao.findById(sessionsId);
+                if (optional!=null){
+                    Sessions sessions=optional.get();
+                    sessions.setExtra(spNum);
+                    sessionsDao.saveAndFlush(sessions);
+                }
+            } else {
+                //修改'當天所有'場次場次容納人數
+                List<Sessions> sessionsList = sessionsDao.findAllByDat(spDat);
+                System.out.println(sessionsList);
+                for (Sessions sessions : sessionsList) {
+                    sessions.setExtra(spNum);
+                    sessionsDao.saveAndFlush(sessions);
+                }
             }
         }
+    }
 
-
-        //return "redirect:/members.html";
+    @RequestMapping(value = "/findSessionsBySpecialDat", method = RequestMethod.POST)
+    public List<Sessions> findSessionsBySpecialDat(@RequestBody String dat) {
+        List<Sessions> sessionsList = sessionsDao.findAllByDatOrderByStartTime(dat);
+        return sessionsList;
+//        JSONArray jsArr = JSONArray.fromObject(projects);
+//        return jsArr;
     }
 }

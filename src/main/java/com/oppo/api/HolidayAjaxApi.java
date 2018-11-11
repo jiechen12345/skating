@@ -95,12 +95,12 @@ public class HolidayAjaxApi {
         Sessions sessions;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String dateString = sdf.format(addDat);
-        List<Sessions> existSession=sessionsDao.findAllByDat(dateString);
-        if (existSession.size() < 4) {
+        //List<Sessions> existSession=sessionsDao.findAllByDat(dateString);
+        if (sessionsDao.findAllByDat(dateString) != null && sessionsDao.findAllByDat(dateString).size() < 4) {
             Accommodate accommodate = accommodateDao.findById(normaldayFlag).get();//人數還是以平日的為主
             //使追加值當天一致
-            Integer extra=existSession.get(0).getExtra();
-            sessions = new Sessions(dateString, holidaySessionName, startTime, endTime, accommodate, 0, extra);
+            //Integer extra=existSession.get(0).getExtra();
+            sessions = new Sessions(dateString, holidaySessionName, startTime, endTime, accommodate, 0, 0);
             sessionsDao.saveAndFlush(sessions);
         } else {
             sessions = new Sessions(9999);
@@ -110,25 +110,18 @@ public class HolidayAjaxApi {
     }
 
     @RequestMapping(value = "/remove", method = RequestMethod.DELETE)
-    public void remove(@RequestBody Date removeDat) {
+    public Boolean remove(@RequestBody Date removeDat) {
+        Boolean flag = false;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String dateString = sdf.format(removeDat);
-        Optional<Holiday> optional = holidayDao.findById(dateString);
-        if (optional.isPresent()) {
-            Holiday holiday = optional.get();
-            holidayDao.delete(holiday);
+        List<Sessions> sessionsList = sessionsDao.findAllByDatOrderByStartTime(dateString);
+        if (sessionsList != null && sessionsList.size() == 4) {
+            System.out.print(sessionsList);
+            Sessions sessions = sessionsList.get(0);
+            sessionsDao.delete(sessions);
+            flag = true;
         }
-        List<Sessions> sessionsList = sessionsDao.findAllByDat(dateString);
-        if (sessionsList != null) {
-            Holiday holiday = optional.get();
-            holidayDao.delete(holiday); //判斷3個或4個
-        }
-        Optional<Accommodate> optional2 = accommodateDao.findById(dateString);
-        if (optional2.isPresent()) {
-            Accommodate accommodate = optional2.get();
-            accommodateDao.delete(accommodate);
-        }
-
+        return flag;
     }
 
 

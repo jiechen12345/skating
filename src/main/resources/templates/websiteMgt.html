@@ -110,7 +110,6 @@
                             success: function (data) {
                                 console.log(data);
                                 if (data.extra != 9999) {
-                                    alert(1);
                                     var n = data.accommodate.num + data.extra;
                                     $('#calendar').fullCalendar('renderEvent',
                                         {
@@ -129,9 +128,7 @@
 
                     },
                     eventClick: function (date, event, view) {
-                         console.log('delete event');
-                         console.log(date);
-                         console.log(event);
+                        console.log('delete event');
                         var data1 = JSON.stringify(date.start._i);
                         $.ajax({
                             url: "holiday/remove",
@@ -139,12 +136,18 @@
                             contentType: 'application/json; charset=UTF-8',
                             type: "DELETE",
                             data: data1,
-                            success: function () {
-                                $('#calendar').fullCalendar('removeEvents', date._id);
+                            success: function (data) {
+                                console.log(data);
+                                console.log(date);
+                                if (data) {
+                                    location.reload();
+                                    //$('#calendar').fullCalendar('removeEvents', date._id);
+                                } else {
+                                    popToast("只能刪除加開場次!");
+                                }
                             },
                             error: function (err) {
                                 console.log(err)
-
                             }
                         });
                     },

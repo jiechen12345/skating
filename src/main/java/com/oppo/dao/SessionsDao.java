@@ -13,5 +13,5 @@ import java.util.List;
 public interface SessionsDao extends JpaRepository<Sessions, Integer>, JpaSpecificationExecutor<Sessions> {
     List<Sessions> findAllByDat(String dat);
 
-    List<Integer> findExtraByDat(String dat);
+    List<Sessions> findAllByDatOrderByStartTime(String dat);
 }

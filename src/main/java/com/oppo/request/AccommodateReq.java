@@ -8,7 +8,7 @@ public class AccommodateReq {
     private Integer holidayNum;
     private String specialDat;
     private Integer specialDayNum;
-
+    private Integer sessionsId;
     public Integer getNormaldayNum() {
         return normaldayNum;
     }
@@ -41,13 +41,22 @@ public class AccommodateReq {
         this.specialDayNum = specialDayNum;
     }
 
+    public Integer getSessionsId() {
+        return sessionsId;
+    }
+
+    public void setSessionsId(Integer sessionsId) {
+        this.sessionsId = sessionsId;
+    }
+
     @Override
     public String toString() {
         return "AccommodateReq{" +
-                "normaldayNum='" + normaldayNum + '\'' +
-                ", holidayNum='" + holidayNum + '\'' +
+                "normaldayNum=" + normaldayNum +
+                ", holidayNum=" + holidayNum +
                 ", specialDat='" + specialDat + '\'' +
                 ", specialDayNum=" + specialDayNum +
+                ", sessionsId=" + sessionsId +
                 '}';
     }
 }

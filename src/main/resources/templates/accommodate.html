@@ -39,6 +39,36 @@
                 $popToast.fadeOut();
             }, 1000);
         }
+
+        function findSessionsBySpecialDatAjax(specialDat) {
+            alert(specialDat);
+            if (specialDat != null && specialDat != "") {
+                $.ajax({
+                    contentType: 'application/json; charset=UTF-8',
+                    type: "post",
+                    data: (specialDat),
+                    url: "/accommodate/findSessionsBySpecialDat",
+                    success: function (data) {
+                        var str = "";
+                        console.log(data);
+                        str +="<option value='0'>" + "</option>";
+                        $.each(data, function (index, value) {
+                            str += "<option value='" + value.id + "'>" + value.startTime + '-' + value.endTime + "</option>";
+                        });
+                        $("#sessionsId").empty();
+                        $("#sessionsId").append(" ");
+                        $("#sessionsId").append(str);
+                    },
+                    error: function (jqXHR, exception) {
+                        ajaxError(jqXHR, exception);
+                        $("#sessionsId").empty();
+                    },
+                });
+            } else {
+
+                $("#sessionsId").empty();
+            }
+        }
     </script>
     <style>
         .pop-toast {
@@ -76,12 +106,18 @@
                                            onkeyup="value=value.replace(/[^\d]/g,'') "/>
                                 </div>
                                 <div class="col-md mb-0">
-                                    <label for="specialDat">追加特定日期＆人數</label>
-                                    <input id='specialDat' name="specialDat" type="text" placeholder="2018-12-30"
-                                           class="form-control datetimepickerDat"　>
+                                    <label for="specialDat">追加特定場次＆人數</label>
+                                    <div class="form-inline">
+                                        <input id='specialDat' name="specialDat" type="text" placeholder="2018-12-30"
+                                               class="form-control datetimepickerDat"
+                                               onchange="findSessionsBySpecialDatAjax($(this).val())" 　>
+                                        <select class="form-control selector" name="sessionsId" id="sessionsId">
+
+                                        </select>
+                                    </div>
                                     <div class="clearfix"></div>
                                     <input id='specialDayNum' name="specialDayNum" type="text"
-                                           class="form-control "　>
+                                           class="form-control " 　>
                                     <div class="clearfix"></div>
                                 </div>
                             </form>
@@ -113,9 +149,9 @@
         var normaldayNum = $('#normaldayNum').val();
         var holidayNum = $('#holidayNum').val();
         var specialDat = $('#specialDat').val();
-        console.log(specialDat);
+        var sessionsId = $('#sessionsId').val();
+        //console.log(sessionsId);
         var specialDayNum = $('#specialDayNum').val();
-        console.log(specialDayNum);
         if (normaldayNum == '') {
             popToast("請設定平日開放人數 ！");
             $('#normaldayNum').focus();
@@ -125,11 +161,11 @@
             popToast("請設定假日開放人數 ！");
             $('#holidayNum').focus();
             return;
-        }else if(specialDat!=''&&specialDayNum==''){
+        } else if (specialDat != '' && specialDayNum == '') {
             popToast("請設定特定日期追加人數或者不指定特定日期");
             $('#specialDayNum').focus();
             return;
-        }else if(specialDat==''&&specialDayNum!=''){
+        } else if (specialDat == '' && specialDayNum != '') {
             popToast("請設定特定日期或者不設定特定日期追加人數");
             $('#specialDat').focus();
             return;
@@ -137,7 +173,13 @@
             $.ajax({
                 contentType: 'application/json; charset=UTF-8',
                 type: "post",
-                data: JSON.stringify({'normaldayNum': normaldayNum,'holidayNum': holidayNum,'specialDat':specialDat,'specialDayNum':specialDayNum}) ,
+                data: JSON.stringify({
+                    'normaldayNum': normaldayNum,
+                    'holidayNum': holidayNum,
+                    'specialDat': specialDat,
+                    'sessionsId': sessionsId,
+                    'specialDayNum': specialDayNum
+                }),
                 async: false,
                 url: "/accommodate/save",
                 success: function (data) {
@@ -178,9 +220,7 @@
         } else {
             msg = 'Uncaught Error.\n' + jqXHR.responseText;
         }
-        alert('seession= ')
-        alert("\''+[[${session.loginUser.getName()}]]+'\'");
-        alert(msg);
+        console.log(msg);
     }
 </script>
 <!-- Icons -->
