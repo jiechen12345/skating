@@ -1,17 +1,10 @@
 package com.oppo.api;
 
 import com.oppo.Entity.Accommodate;
-import com.oppo.Entity.Holiday;
-import com.oppo.Entity.Project;
 import com.oppo.Entity.Sessions;
-import com.oppo.business.BookService;
 import com.oppo.dao.AccommodateDao;
 import com.oppo.dao.HolidayDao;
-import com.oppo.dao.ProjectDao;
 import com.oppo.dao.SessionsDao;
-import com.oppo.dto.BookDto;
-import com.oppo.dto.ProjectDto;
-import com.oppo.request.BookReq;
 import com.oppo.request.HolidayReq;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,23 +14,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.Context;
-import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
-import org.w3c.tidy.Tidy;
-import org.xhtmlrenderer.pdf.ITextRenderer;
-import sun.util.calendar.BaseCalendar;
+
 
 import javax.persistence.criteria.Predicate;
-import java.io.*;
-import java.nio.file.FileSystems;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 
-import static com.itextpdf.text.pdf.BaseFont.EMBEDDED;
-import static com.itextpdf.text.pdf.BaseFont.IDENTITY_H;
-import static org.thymeleaf.templatemode.TemplateMode.HTML;
 
 /**
  * Created by JieChen on 2018/10/5.
@@ -48,8 +30,6 @@ import static org.thymeleaf.templatemode.TemplateMode.HTML;
 public class HolidayAjaxApi {
     Logger LOGGER = LoggerFactory.getLogger(HolidayAjaxApi.class);
     @Autowired
-    private HolidayDao holidayDao;
-    @Autowired
     private AccommodateDao accommodateDao;
     @Autowired
     private SessionsDao sessionsDao;
@@ -59,9 +39,9 @@ public class HolidayAjaxApi {
     @Value("${accommodate.normaldayFlag}")
     private String normaldayFlag;
     @Value("${sessions.Holiday.startTime}")
-    String startTime = "14:00";
+    String startTime ;
     @Value("${sessions.Holiday.endTime}")
-    String endTime = "15:30";
+    String endTime ;
 
     @RequestMapping(value = "/load", method = RequestMethod.POST)
     public List<Sessions> load(@RequestBody HolidayReq holidayReq) {

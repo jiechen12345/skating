@@ -111,6 +111,7 @@
                                 console.log(data);
                                 if (data.extra != 9999) {
                                     var n = data.accommodate.num + data.extra;
+                                    if(n<0){n=0};
                                     $('#calendar').fullCalendar('renderEvent',
                                         {
                                             title: '  開放人數: ' + n,
@@ -166,11 +167,12 @@
                                 $('#calendar').fullCalendar('removeEvents', function (calEvent) {
                                     return true;
                                 });
-                                console.log(data);
+                                //console.log(data);
                                 var events = [];
                                 $.each(data, function (key, value) {
                                     if (value.dat != null) {
                                         var n = value.accommodate.num + value.extra;
+                                        if(n<0){n=0};
                                         events.push({
                                             title: '  開放人數: ' + n,
                                             start: new Date(Date.parse(value.dat + ' ' + value.startTime)),

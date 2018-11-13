@@ -553,11 +553,7 @@
     })();
 
     function enter() {
-        var session = "\''+[[${session.loginUser.getName()}]]+'\'";
-        if (session == null || session == '') {
-            alert('session 失效');
-            window.location.replace(location);
-        }
+
         var status = $('#status').val();
         switch (status) {
             case 'create':
