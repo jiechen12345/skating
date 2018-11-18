@@ -26,7 +26,7 @@ public class InsertHoliday {
     public static String FLAG2 = "N"; //平日
     public static Integer NUM = 150; //假日預設人數
     public static Integer NUM2 = 100;//平日預設人數
-    public static String[]  sessionName = {"假日及寒假加開場次", "第一場", "第二場", "第三場"};
+    public static String[] sessionName = {"假日及寒假加開場次", "第一場", "第二場", "第三場"};
     public static String[] startTime = {"14:00", "16:00", "18:00", "20:00"};
     public static String[] endTime = {"15:30", "17:30", "19:30", "21:30"};
 
@@ -82,6 +82,8 @@ public class InsertHoliday {
             statement.execute(truncateSql);
             truncateSql = "TRUNCATE TABLE SESSIONS";
             statement.execute(truncateSql);
+            truncateSql = "TRUNCATE TABLE STATUS";
+            statement.execute(truncateSql);
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
             Date start = sdf.parse(START);//开始时间
             Date end = sdf.parse(END);//结束时间
@@ -90,10 +92,40 @@ public class InsertHoliday {
 //            Date lastWorkDate = sdf.parse("20181106");//上一个工作日
             Date nextWorkDate;
             Date lastWorkDate;//上一个工作日
+            //1:送出表單 2:OTP申請 3:OTP通過 4:審核不通過 5:審核通過 6:到場
+            String insertSql = "";
+            String STATUS_NAME = "";
+            for (int i = 1; i <= 6; i++) {
+                switch (i) {
+                    case 1:
+                        STATUS_NAME = "送出表單";
+                        break;
+                    case 2:
+                        STATUS_NAME = "OTP申請";
+                        break;
+                    case 3:
+                        STATUS_NAME = "OTP通過";
+                        break;
+                    case 4:
+                        STATUS_NAME = "審核不通過";
+                        break;
+                    case 5:
+                        STATUS_NAME = "審核通過";
+                        break;
+                    case 6:
+                        STATUS_NAME = "到場";
+                        break;
+
+                }
+                insertSql = "INSERT INTO STATUS (id,STATUS_NAME) " +
+                        "VALUES(" + i + ",'" + STATUS_NAME + "')";
+                System.out.println(insertSql);
+                statement.execute(insertSql);
+            }
 
             //-設定容納人數
 
-            String insertSql = "INSERT INTO ACCOMMODATE (flag,num) " +
+            insertSql = "INSERT INTO ACCOMMODATE (flag,num) " +
                     "VALUES('" + FLAG + "'," + NUM + ")";
             System.out.println(insertSql);
             statement.execute(insertSql);
@@ -138,7 +170,7 @@ public class InsertHoliday {
                         System.out.println(dateString);
                         for (int i = 1; i <= 3; i++) {
                             insertSql = "insert into sessions (dat,reserved,sessions_name,start_time,end_time,accommodate_flag,extra)\n" +
-                                    "VALUES('" +dateString+ "'," +0+ ",'"+sessionName[i]+ "','" +startTime[i]+ "','"+endTime[i]+ "','" +FLAG2+ "',"+0+")";
+                                    "VALUES('" + dateString + "'," + 0 + ",'" + sessionName[i] + "','" + startTime[i] + "','" + endTime[i] + "','" + FLAG2 + "'," + 0 + ")";
                             System.out.println("平日 " + insertSql);
                             statement.execute(insertSql);
                         }
@@ -153,7 +185,7 @@ public class InsertHoliday {
                         statement.execute(insertSql);
                         for (int i = 0; i <= 3; i++) {
                             insertSql = "insert into sessions (dat,reserved,sessions_name,start_time,end_time,accommodate_flag,extra)\n" +
-                                    "VALUES('" +dateString+ "'," +0+ ",'"+sessionName[i]+ "','" +startTime[i]+ "','"+endTime[i]+ "','" +FLAG+ "',"+0+")";
+                                    "VALUES('" + dateString + "'," + 0 + ",'" + sessionName[i] + "','" + startTime[i] + "','" + endTime[i] + "','" + FLAG + "'," + 0 + ")";
                             System.out.println("假日 " + insertSql);
                             statement.execute(insertSql);
                         }
