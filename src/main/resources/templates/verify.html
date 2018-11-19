@@ -8,8 +8,7 @@
     <meta name="description" content=""/>
     <meta name="author" content=""/>
 
-
-    <title>會員帳號管理</title>
+    <title>審核報名資料</title>
 
     <!-- Bootstrap core CSS -->
     <link href="/css/bootstrap.min.css" rel="stylesheet"/>
@@ -68,16 +67,20 @@
 
                     <tr th:each="preorder:${preorders}">
                         <td style="width:13%" align="center">
+
                             <!--thymeleaf 傳参到js onclick事件中-->
                             <div class="btn btn-sm btn-primary" data-toggle="modal"
-                                 th:onclick="'javascript:openModifyModal(\''+${preorder.id}+'\')'">
+                                 th:onclick="'javascript:openPreviewModal(\''+${preorder.id}+'\')'">
                                 修改
                             </div>
+
+                            <a th:href="@{/imgContent/}+${preorder.id}">1111</a>
+
                             <!--  <a href="#" th:href="@{/member/}+${member.id}" class="btn btn-sm btn-primary">修改</a> -->
-                            <div class="btn btn-sm btn-danger deleteBtn" data-toggle="modal"
-                                 th:onclick="'javascript:sendDeleteMember(\''+${preorder.id}+'\')'">
-                                刪除
-                            </div>
+                            <!--   <div class="btn btn-sm btn-danger deleteBtn" data-toggle="modal"
+                                    th:onclick="'javascript:sendDeleteMember(\''+${preorder.id}+'\')'">
+                                   刪除
+                               </div> -->
                         </td>
 
                         <td th:text="${preorder.groupName}">1</td>
@@ -98,99 +101,14 @@
             <div th:replace="common/pagination::pagination"></div>
         </main>
     </div>
-</div>
-<!-- *****新增form *****-->
-<div id="addPanelHolder">
 
-    <div id="addPanel" class="modal fade" role="dialog" th:fragment="addModalContens">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="hdr-form-customer">會員資料</h4>
-                    <button type="button" class="close" data-dismiss="modal">×</button>
-                </div>
-                <div class="modal-body">
-
-                    <form class="form-group">
-                        <label>姓名</label>
-                        <input type="text" name="name" id="name" class="form-control">
-                        <label>帳號</label>
-                        <input type="text" name="account" id="account" class="form-control">
-                        <label>密碼</label>
-                        <input type="password" name="password" id="password" class="form-control">
-                        <label>確認密碼</label>
-                        <input type="password" name="password2" id="password2" class="form-control">
-                        <label>部門</label>
-                        <select class="form-control" name="depId" id="depId">
-                            <option th:each="dept:${depts}" th:value="${dept.id}" th:text="${dept.depName}"></option>
-                        </select>
-
-                        <div class="clearfix"></div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-link pull-left" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-default btn-success" data-dismiss="modal"
-                            th:onclick="'javascript:sendAddMember()'">Save
-                    </button>
-                </div>
-            </div>
-
-        </div>
-    </div>
 </div>
 
-<!-- *****修改form *****-->
-<div id="modifyPanelHolder">
 
-    <div id="modifyPanel" class="modal fade" role="dialog" th:fragment="modifyModalContens">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="hdr-form-customer2">會員資料</h4>
-                    <button type="button" class="close" data-dismiss="modal">×</button>
-                </div>
-                <div class="modal-body">
-                    <form class="form-group">
-                        <input type="hidden" name="id_m" id="id_m" th:value="${memberDto!=null}?${memberDto.id}">
-                        <label>姓名</label>
-                        <!--/*@thymesVar id="name" type="com.oppo.dto.MemberDto"*/-->
-                        <input required="required" th:value="${memberDto!=null}?${memberDto.name}" type="text"
-                               name="name_m" id="name_m"
-                               class="form-control">
-                        <label>帳號</label>
-                        <input required="required" th:value="${memberDto!=null}?${memberDto.account}" type="text"
-                               name="account_m"
-                               id="account_m" class="form-control">
-                        <label>密碼</label>
-                        <input required="required" type="password" name="password_m" id="password_m"
-                               class="form-control">
-                        <label>確認密碼</label>
-                        <input type="password" name="password2_m" id="password2_m" class="form-control">
-                        <label>部門</label>
-                        <select class="form-control" name="depId_m" id="depId_m">
-                            <option th:selected="${memberDto!=null}?${dept.id==memberDto.depId}" th:each="dept:${depts}"
-                                    th:value="${dept.id}" th:text="${dept.depName}"></option>
-                        </select>
-
-                        <div class="clearfix"></div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-link pull-left" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-default btn-success" data-dismiss="modal"
-                            th:onclick="'javascript:sendModifyMember()'">Save
-                    </button>
-                </div>
-            </div>
-
-        </div>
-    </div>
-</div>
 <!-- Bootstrap core JavaScript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
-<script src="/js/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
+<script th:src="@{/js/jquery-3.3.1.min.js}" src="/js/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
 <script src="/js/popper.min.js"></script>
 <script src="/js/bootstrap.min.js"></script>
 <!-- Icons -->
@@ -199,6 +117,8 @@
     feather.replace()
 </script>
 <script>
+
+
     function changePageSize() {
         var page = '1' // 修改每頁幾筆自動回第一頁
         var pageSize = $('#pageSize').val();
@@ -227,15 +147,17 @@
         )
     }
 
-    function openModifyModal(id) {
-        //alert("id 是 " + id);
-        var memberId = id;
+    function openPreviewModal(id) {
+        alert("id 是 " + id);
+        var id = id;
         $.ajax({
                 contentType: 'application/json; charset=UTF-8',
-                type: 'GET',
-                url: "/toModifyMember/" + id,
+                type: 'POST',
+                url: "/verify/openPreviewModal",
+                data: id,
                 success: function (data) {
-                    $('#modifyPanelHolder').html(data);
+                    console.log(data);
+                    // $('#modifyPanelHolder').html(data);
                     $('#modifyPanel').modal('show');
                 }
             }
@@ -298,20 +220,6 @@
         )
     }
 
-    function sendDeleteMember(id) {
-        //alert("要刪除的id 是 " + id);
-        $.ajax({
-                contentType: 'application/json; charset=UTF-8',
-                type: 'DELETE',
-                url: "/member/" + id,
-                complete: location.reload(),
-                success: function (data) {
-                    alert(data);
-                    location.reload();
-                }
-            }
-        )
-    }
 
 </script>
 

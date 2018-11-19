@@ -52,7 +52,7 @@ public class VerifyServiceImpl implements VerfyService {
     @Override
     public PreorderPage getAllForm(Integer page, Integer PageSize) {
         Page<PreOrder> p = preorderDao.findAll((root, query, cb) -> {
-            query.orderBy(cb.desc(root.get("otpPassTime")));
+            query.orderBy(cb.desc(root.get("otpPassTime")),cb.desc(root.get("createTime")));
             return cb.and();
         }, PageRequest.of(page - 1, PageSize));
 
@@ -61,6 +61,7 @@ public class VerifyServiceImpl implements VerfyService {
                     .stream()
 
                     .map(it -> new PreorderDto(
+                            it.getId(),
                             (it.getSessions() != null) ? it.getSessions().getSessionsName() : "",
                             (it.getSessions() != null) ? it.getSessions().getStartTime()+"-"+it.getSessions().getEndTime() : "",
                             it.getPreorderDate(),

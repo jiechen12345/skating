@@ -9,14 +9,20 @@ import com.oppo.dto.*;
 import com.oppo.request.BookReq;
 import com.oppo.request.MemberReq;
 import com.oppo.request.PreorderReq;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
+import javax.imageio.ImageIO;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,11 +34,9 @@ import java.util.List;
 public class VerifyApi {
     Logger LOGGER = LoggerFactory.getLogger(VerifyApi.class);
     @Autowired
-    private DepartmentDao departmentDao;
-    @Autowired
-    private MemberService memberService;
-    @Autowired
     private VerfyService verfyService;
+    @Value("${upload.uploadingdir}")
+    String uploadingdir;
     Integer[] pageSizeOption = {5, 10, 15, 20};
     PreorderReq preorderReq = new PreorderReq();
 //    List<Integer> pageSizeOption=new ArrayList<Integer>()
@@ -56,13 +60,14 @@ public class VerifyApi {
         model.addAttribute("preorderReq", preorderReq);
         return "verify";
     }
+
     //查詢分頁會員列表及修改pageSize
     @GetMapping("/verifyChangePage")
     public String changePageSize(@RequestParam(required = false, defaultValue = "1") Integer page,
                                  @RequestParam(required = false, defaultValue = "5") Integer pageSize, Model model) {
         PreorderPage preorderPage = verfyService.getAllForm(page, pageSize);
         //List<MemberDto> memberDtoList = memberService.findAll();
-        model.addAttribute("members", preorderPage.getContents());
+        model.addAttribute("preorders", preorderPage.getContents());
         model.addAttribute("indexPage", preorderPage.getCurrentPage());
         model.addAttribute("totalPages", preorderPage.getTotalPages());
         model.addAttribute("pageSize", pageSize);
@@ -70,6 +75,35 @@ public class VerifyApi {
         model.addAttribute("pageSizeOption", pageSizeOption);
         return "verify";
     }
+
+    @GetMapping("/imgContent/{id}")
+    public String openImgContent(@PathVariable String id, Model model) throws Exception {
+        List<String> list = new ArrayList<String>();
+        File file = new File(uploadingdir, id);
+        //String fileString=file.listFiles()[0];
+        String fileString = "";
+        for (File f : file.listFiles()) {
+            fileString = f.toString();
+            int i = fileString.lastIndexOf("\\");
+            int j = fileString.length();
+            String fileName = fileString.substring(fileString.lastIndexOf("\\") + 1, fileString.length());
+            list.add(fileName);
+        }
+        model.addAttribute("imgs", list);
+        model.addAttribute("id", id);
+        return "showImg";
+    }
+
+    @GetMapping("/showImg/{id}/{picFile}")
+    public void showImg(@PathVariable String id, @PathVariable String picFile, HttpServletResponse response) throws Exception {
+//  c;uploadingdir\201811230001\75444.jpg
+        File file = new File(uploadingdir, id);
+        String fileName = file.toString() + "\\" + picFile;
+        response.setHeader("Content-Disposition", fileName);
+        response.setContentType("image/jpeg");
+        IOUtils.copy(new FileInputStream(fileName), response.getOutputStream());
+    }
+
 
 //    @RequestMapping(value = "/toAddMember", method = RequestMethod.GET)
 //    public String toAddModal(Model model) throws IOException {

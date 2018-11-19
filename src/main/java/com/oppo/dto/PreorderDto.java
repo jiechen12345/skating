@@ -13,7 +13,7 @@ public class PreorderDto {
     //已預約
     public Integer reserved = 0;
     //剩餘人數
-    public Integer remaining =0;
+    public Integer remaining = 0;
 
 
     public String id;
@@ -26,10 +26,12 @@ public class PreorderDto {
     public Integer groupNum;
     //0:送出 1:OTP過 2:審核通過 3:到場?? 4:審核不通過
     private String status;
+
     public PreorderDto() {
     }
 
-    public PreorderDto(String sessionsName, String starAndEndTime, String preorderDate, String groupName, String applicantName, String applicantPhone, String applicantEmail, Integer groupNum, String status) {
+    public PreorderDto(String id, String sessionsName, String starAndEndTime, String preorderDate, String groupName, String applicantName, String applicantPhone, String applicantEmail, Integer groupNum, String status) {
+        this.id = id;
         this.sessionsName = sessionsName;
         this.starAndEndTime = starAndEndTime;
         this.preorderDate = preorderDate;
@@ -64,8 +66,7 @@ public class PreorderDto {
     }
 
 
-
-    public PreorderDto( String dat, String sessionsName, String startTime, String endTime, Integer reserved, Integer remaining) {
+    public PreorderDto(String dat, String sessionsName, String startTime, String endTime, Integer reserved, Integer remaining) {
         this.dat = dat;
         this.sessionsName = sessionsName;
         this.startTime = startTime;
