@@ -8,6 +8,8 @@
     <link th:href="@{/css/bootstrap-table.css}" href="/css/bootstrap-table.css" rel="stylesheet">
     <link th:href="@{/css/bootstrap.min.css}" href="/css/bootstrap.min.css" rel="stylesheet"/>
     <link th:href="@{/css/bootstrap-jie.css}" href="/css/bootstrap-jie.css" rel="stylesheet">
+
+
     <style>
         * {
             margin: 0;
@@ -30,8 +32,33 @@
         #dowebok li img {
             width: 100%;
         }
+
+        #gotop {
+            position:fixed;
+            z-index:90;
+            right:30px;
+            bottom:31px;
+            display:none;
+            width:50px;
+            height:50px;
+            color:#fff;
+            background:#33b5e5;
+            line-height:50px;
+            border-radius:50%;
+            transition:all 0.5s;
+            text-align: center;
+            box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
+        }
+        #gotop :hover{
+            background:#0099CC;
+        }
     </style>
-    <script src="../static/js/viewer.min.js"></script>
+
+    <script th:src="@{/js/jquery-3.3.1.min.js}" src="/js/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
+    <script  th:src="@{/js/feather.min.js}"></script>
+    <script th:src="@{/js/viewer.min.js}" src="../static/js/viewer.min.js"></script>
+    <script th:src="@{/js/popper.min.js}" src="/js/popper.min.js"></script>
+    <script th:src="@{/js/bootstrap.min.js}" src="/js/bootstrap.min.js"></script>
 </head>
 <body class="gradient">
 <!--
@@ -39,14 +66,18 @@
 <li><img th:attr="original=@{/img/tibet-1.jpg}" th:src="@{/img/tibet-1.jpg}" alt="图片1"></li>
 <!-- <img th:attr="original=@{/img/tibet-1.jpg}" th:src="@{/img/tibet-1.jpg}"> -->
 <div class="container-fluid">
+<h4 style="color: darkred">[[${errMsg}]]</h4>
     <button type="button" class="btn btn-primary btn-lg" onclick="history.back()">上一頁</button>
-
     <ul id="dowebok">
         <li th:each="img:${imgs}">
             <img th:attr="original=@{/showImg/}+${id}+@{/}+${img}" th:src="@{/showImg/}+${id}+@{/}+${img}">
         </li>
     </ul>
 </div>
+<a href="https://www.blogger.com/blogger.g?blogID=2031514508322140995#" id="gotop" style="">
+    <img src="../static/img/svg/arrow-up.svg" th:src="@{/img/svg/arrow-up.svg}">
+    <span class="fa fa-angle-up"></span>
+</a>
 <script th:src="@{/js/jquery-3.3.1.min.js}" src="/js/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
 <script th:src="@{/js/viewer.min.js}" crossorigin="anonymous"></script>
 
@@ -86,6 +117,24 @@
             // alert('viewed');
         }
     });
+
+        $(function() {
+            /* 按下GoTop按鈕時的事件 */
+            $('#gotop').click(function(){
+                $('html,body').animate({ scrollTop: 0 }, 'slow');   /* 返回到最頂上 */
+                return false;
+            });
+
+            /* 偵測卷軸滑動時，往下滑超過400px就讓GoTop按鈕出現 */
+            $(window).scroll(function() {
+                if ( $(this).scrollTop() > 150){
+                    $('#gotop').fadeIn();
+                } else {
+                    $('#gotop').fadeOut();
+                }
+            });
+        });
+
 </script>
 
 </body>

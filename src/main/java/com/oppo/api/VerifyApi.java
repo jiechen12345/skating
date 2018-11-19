@@ -79,24 +79,29 @@ public class VerifyApi {
     @GetMapping("/imgContent/{id}")
     public String openImgContent(@PathVariable String id, Model model) throws Exception {
         List<String> list = new ArrayList<String>();
+        String errMsg="";
         File file = new File(uploadingdir, id);
         //String fileString=file.listFiles()[0];
-        String fileString = "";
-        for (File f : file.listFiles()) {
-            fileString = f.toString();
-            int i = fileString.lastIndexOf("\\");
-            int j = fileString.length();
-            String fileName = fileString.substring(fileString.lastIndexOf("\\") + 1, fileString.length());
-            list.add(fileName);
+        String fileString = " ";
+        if (file.exists()) {
+            for (File f : file.listFiles()) {
+                fileString = f.toString();
+                int i = fileString.lastIndexOf("\\");
+                int j = fileString.length();
+                String fileName = fileString.substring(fileString.lastIndexOf("\\") + 1, fileString.length());
+                list.add(fileName);
+            }
+        }else{
+            errMsg=" 此筆資料無上傳附件!!";
         }
         model.addAttribute("imgs", list);
         model.addAttribute("id", id);
+        model.addAttribute("errMsg", errMsg);
         return "showImg";
     }
 
     @GetMapping("/showImg/{id}/{picFile}")
     public void showImg(@PathVariable String id, @PathVariable String picFile, HttpServletResponse response) throws Exception {
-//  c;uploadingdir\201811230001\75444.jpg
         File file = new File(uploadingdir, id);
         String fileName = file.toString() + "\\" + picFile;
         response.setHeader("Content-Disposition", fileName);
