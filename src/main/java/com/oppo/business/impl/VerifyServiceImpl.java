@@ -51,6 +51,7 @@ public class VerifyServiceImpl implements VerfyService {
 
     @Override
     public PreorderPage getAllForm(Integer page, Integer PageSize) {
+        //todo: 只顯示OTP過的人?
         Page<PreOrder> p = preorderDao.findAll((root, query, cb) -> {
             query.orderBy(cb.desc(root.get("otpPassTime")),cb.desc(root.get("createTime")));
             return cb.and();

@@ -33,7 +33,6 @@ public class OtherMsgApi {
     //toAddOtherMsg
     @GetMapping("/otherMsg")
     public String toAddOtherMsg(Model model) {
-        //todo:是否還有預設值待後續補入
         return "otherMsg/addOtherMsg";
 
     }
