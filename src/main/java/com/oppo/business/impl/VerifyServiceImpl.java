@@ -19,12 +19,7 @@ import static java.util.stream.Collectors.toList;
 public class VerifyServiceImpl implements VerfyService {
     @Autowired
     private PreorderDao preorderDao;
-    @Autowired
-    private ProjectDao projectDao;
-    @Autowired
-    private CustomerDao customerDao;
-    @Autowired
-    private MemberDao memberDao;
+
 
 //    @Override
 //    public List<PreorderDto> findAll() {

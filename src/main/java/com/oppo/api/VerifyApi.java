@@ -1,13 +1,7 @@
 package com.oppo.api;
 
-import com.oppo.Entity.Customer;
-import com.oppo.Entity.Departemt;
-import com.oppo.business.MemberService;
 import com.oppo.business.VerfyService;
-import com.oppo.dao.DepartmentDao;
 import com.oppo.dto.*;
-import com.oppo.request.BookReq;
-import com.oppo.request.MemberReq;
 import com.oppo.request.PreorderReq;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.slf4j.Logger;
@@ -18,10 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.imageio.ImageIO;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
