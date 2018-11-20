@@ -33,6 +33,8 @@ public class VerifyAjaxApi {
     private PreorderDao preorderDao;
     @Autowired
     private StatusDao statusDao;
+    @Autowired
+    private SessionsDao sessionsDao;
 
     @RequestMapping(value = "/execute", method = RequestMethod.PUT)
     public void verifyExecute(@RequestBody String ids) {
@@ -42,17 +44,24 @@ public class VerifyAjaxApi {
             Status status = statusDao.findById(5).get();
             for (int i = 1; i < idArr.length; i++) {
                 PreOrder preOrder = preorderDao.findById(idArr[i]).get();
-                preOrder.setVerifyTime(DateTime.now().toDate());
-                preOrder.setStatus(status);
-                preorderDao.save(preOrder);
+                if ((preOrder.getVerifyTime() == null || "".equals(preOrder.getVerifyTime())) && preOrder.getStatus().getId() < 4) {
+                    preOrder.setVerifyTime(DateTime.now().toDate());
+                    preOrder.setStatus(status);
+                    preorderDao.save(preOrder);
+                }
             }
         } else if (idArr.length > 0 && "2".equals(idArr[0])) {
             Status status = statusDao.findById(4).get();
             for (int i = 1; i < idArr.length; i++) {
                 PreOrder preOrder = preorderDao.findById(idArr[i]).get();
-                preOrder.setVerifyTime(DateTime.now().toDate());
-                preOrder.setStatus(status);
-                preorderDao.save(preOrder);
+                if ((preOrder.getVerifyTime() == null || "".equals(preOrder.getVerifyTime())) && preOrder.getStatus().getId() < 4) {
+                    preOrder.setVerifyTime(DateTime.now().toDate());
+                    preOrder.setStatus(status);
+                    preorderDao.save(preOrder);
+                    Sessions sessions = preOrder.getSessions();
+                    sessions.setReserved(sessions.getReserved() - preOrder.getGroupNum());
+                    sessionsDao.saveAndFlush(sessions);
+                }
             }
         }
 

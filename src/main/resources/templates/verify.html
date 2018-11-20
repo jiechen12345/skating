@@ -69,30 +69,35 @@
                         <th>狀態</th>
                     </tr>
                     </thead>
-                    <div>
-                        &nbsp
+                    <div class="form-check form-check-inline " style="padding-left: 2%">
+
                         <label>
                             <input type="checkbox" name="CheckAll" value="核取方塊" id="CheckAll"/>
-                            全選以下
+                            全選
                         </label>
-                        <div class="btn btn btn-success btn-md"
-                             onclick="verifySelect(1)">
-                            審核通過
+                        <div style="padding-left: 4%">
+                            <div class="btn btn btn-success btn-md"
+                                 onclick="verifySelect(1)">
+                                審核通過
+                            </div>
                         </div>
-                        &nbsp
-                        <div class="btn btn btn-danger deleteBtn"
-                             onclick="verifySelect(2)">
-                            審核不通過
+                        <div style="padding-left: 6%">
+                            <div class="btn btn btn-danger deleteBtn"
+                                 onclick="verifySelect(2)">
+                                審核不通過
+                            </div>
                         </div>
                     </div>
                     <tbody id="list-itens">
 
                     <tr th:each="preorder:${preorders}">
                         <td style="width:12%" align="center">
+                            <div style="padding-left: 6%">
                             <input type="checkbox" class="form-check-input" name="id[]" value="" id="id[]"
                                    th:value="${preorder.id}"/>
                             &nbsp
                             <a th:href="@{/imgContent/}+${preorder.id}" class="btn btn-sm btn-primary">附件</a>
+                            </div>
 
                             <!--  <a href="#" th:href="@{/member/}+${member.id}" class="btn btn-sm btn-primary">修改</a> -->
                             <!--   <div class="btn btn-sm btn-danger deleteBtn" data-toggle="modal"

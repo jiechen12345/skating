@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "feather-icons": "^4.9.0",
     "globals": "^11.8.0"
   },
   "devDependencies": {
