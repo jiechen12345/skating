@@ -35,169 +35,171 @@ public class InsertHoliday {
         Scanner sc = new Scanner(System.in);
         System.out.println("請輸入DB username：");
         String user = sc.nextLine();
-        System.out.println("請輸入DB password：");
-        String password = sc.nextLine();
-        System.out.println("請輸入STARTDAT(20181101)：");
-        if (!"".equals(sc.nextLine())) {
-            START = sc.nextLine();
-        }
-        System.out.println("請輸入ENDDAT(20190330)：");
-        if (!"".equals(sc.nextLine())) {
-            END = sc.nextLine();
-        }
-        System.out.println("假日人數(150)：");
-        if (!"".equals(sc.nextLine())) {
-            NUM = sc.nextInt();
-        }
-        System.out.println("平日人數(100)：");
-        if (!"".equals(sc.nextLine())) {
-            NUM2 = sc.nextInt();
-        }
-        System.out.println("你的信息如下：");
-        System.out.println("username：" + user + "\n" + "password：" + password + "\n");
-        System.out.println("STARTDAT：" + START + "\n" + "ENDDAT：" + END + "\n");
-        System.out.println("假日人數：" + NUM + "\n" + "平日人數：" + NUM2 + "\n");
-        //驱动程序名
-        String driver = "com.mysql.jdbc.Driver";
-        //String driver = "oracle.jdbc.driver.OracleDriver";
-        //要插入的数据库
-        //String url = "jdbc:oracle:thin:@127.0.0.1:1521:orcl";
-        String url = "jdbc:mysql://127.0.0.1:3306/skating";
+        if (!"".equals(user)) {
+            System.out.println("請輸入DB password：");
+            String password = sc.nextLine();
+            System.out.println("請輸入STARTDAT(20181101)：");
+            if (!"".equals(sc.nextLine())) {
+                START = sc.nextLine();
+            }
+            System.out.println("請輸入ENDDAT(20190330)：");
+            if (!"".equals(sc.nextLine())) {
+                END = sc.nextLine();
+            }
+            System.out.println("假日人數(150)：");
+            if (!"".equals(sc.nextLine())) {
+                NUM = sc.nextInt();
+            }
+            System.out.println("平日人數(100)：");
+            if (!"".equals(sc.nextLine())) {
+                NUM2 = sc.nextInt();
+            }
+            System.out.println("你的信息如下：");
+            System.out.println("username：" + user + "\n" + "password：" + password + "\n");
+            System.out.println("STARTDAT：" + START + "\n" + "ENDDAT：" + END + "\n");
+            System.out.println("假日人數：" + NUM + "\n" + "平日人數：" + NUM2 + "\n");
+            //驱动程序名
+            String driver = "com.mysql.jdbc.Driver";
+            //String driver = "oracle.jdbc.driver.OracleDriver";
+            //要插入的数据库
+            //String url = "jdbc:oracle:thin:@127.0.0.1:1521:orcl";
+            String url = "jdbc:mysql://127.0.0.1:3306/skating";
 //        String user = "root";
 //        String password = "asd";
-        try {
-            //加载驱动程序
-            Class.forName(driver);
-            //连接数据库
-            Connection conn = DriverManager.getConnection(url, user, password);
-            if (!conn.isClosed())
-                System.out.println("[batch]Succeeded connecting to the Database!");
-            //statement用来执行SQL语句
-            Statement statement = conn.createStatement();
+            try {
+                //加载驱动程序
+                Class.forName(driver);
+                //连接数据库
+                Connection conn = DriverManager.getConnection(url, user, password);
+                if (!conn.isClosed())
+                    System.out.println("[batch]Succeeded connecting to the Database!");
+                //statement用来执行SQL语句
+                Statement statement = conn.createStatement();
 
-            //---清空
-            String truncateSql = "TRUNCATE TABLE holiday";
-            statement.execute(truncateSql);
-            truncateSql = "TRUNCATE TABLE ACCOMMODATE";
-            statement.execute(truncateSql);
-            truncateSql = "TRUNCATE TABLE SESSIONS";
-            statement.execute(truncateSql);
-            truncateSql = "TRUNCATE TABLE STATUS";
-            statement.execute(truncateSql);
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-            Date start = sdf.parse(START);//开始时间
-            Date end = sdf.parse(END);//结束时间
-            List<Date> lists = dateSplit(start, end);
+                //---清空
+                String truncateSql = "TRUNCATE TABLE holiday";
+                statement.execute(truncateSql);
+                truncateSql = "TRUNCATE TABLE ACCOMMODATE";
+                statement.execute(truncateSql);
+                truncateSql = "TRUNCATE TABLE SESSIONS";
+                statement.execute(truncateSql);
+                truncateSql = "TRUNCATE TABLE STATUS";
+                statement.execute(truncateSql);
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+                Date start = sdf.parse(START);//开始时间
+                Date end = sdf.parse(END);//结束时间
+                List<Date> lists = dateSplit(start, end);
 //            Date nextWorkDate = sdf.parse("20180108");//下一个工作日，默认1月2日，1日为元旦
 //            Date lastWorkDate = sdf.parse("20181106");//上一个工作日
-            Date nextWorkDate;
-            Date lastWorkDate;//上一个工作日
-            //1:送出表單 2:OTP申請 3:OTP通過 4:審核不通過 5:審核通過 6:到場
-            String insertSql = "";
-            String STATUS_NAME = "";
-            for (int i = 1; i <= 6; i++) {
-                switch (i) {
-                    case 1:
-                        STATUS_NAME = "送出表單";
-                        break;
-                    case 2:
-                        STATUS_NAME = "OTP申請";
-                        break;
-                    case 3:
-                        STATUS_NAME = "OTP通過";
-                        break;
-                    case 4:
-                        STATUS_NAME = "審核不通過";
-                        break;
-                    case 5:
-                        STATUS_NAME = "審核通過";
-                        break;
-                    case 6:
-                        STATUS_NAME = "到場";
-                        break;
+                Date nextWorkDate;
+                Date lastWorkDate;//上一个工作日
+                //1:送出表單 2:OTP申請 3:OTP通過 4:審核不通過 5:審核通過 6:到場
+                String insertSql = "";
+                String STATUS_NAME = "";
+                for (int i = 1; i <= 6; i++) {
+                    switch (i) {
+                        case 1:
+                            STATUS_NAME = "送出表單";
+                            break;
+                        case 2:
+                            STATUS_NAME = "OTP申請";
+                            break;
+                        case 3:
+                            STATUS_NAME = "OTP通過";
+                            break;
+                        case 4:
+                            STATUS_NAME = "審核不通過";
+                            break;
+                        case 5:
+                            STATUS_NAME = "審核通過";
+                            break;
+                        case 6:
+                            STATUS_NAME = "到場";
+                            break;
 
+                    }
+                    insertSql = "INSERT INTO STATUS (id,STATUS_NAME) " +
+                            "VALUES(" + i + ",'" + STATUS_NAME + "')";
+                    System.out.println(insertSql);
+                    statement.execute(insertSql);
                 }
-                insertSql = "INSERT INTO STATUS (id,STATUS_NAME) " +
-                        "VALUES(" + i + ",'" + STATUS_NAME + "')";
+
+                //-設定容納人數
+
+                insertSql = "INSERT INTO ACCOMMODATE (flag,num) " +
+                        "VALUES('" + FLAG + "'," + NUM + ")";
                 System.out.println(insertSql);
                 statement.execute(insertSql);
-            }
+                insertSql = "INSERT INTO ACCOMMODATE (flag,num) " +
+                        "VALUES('" + FLAG2 + "'," + NUM2 + ")";
+                System.out.println(insertSql);
+                statement.execute(insertSql);
+                //-設定例假日
+                if (!lists.isEmpty()) {
+                    for (Date date : lists) {
+                        Calendar cal = Calendar.getInstance();
+                        cal.setTime(date);
+                        //System.out.println("********插入日期:" + sdf.format(date) + "***********");
 
-            //-設定容納人數
+                        int year = cal.get(Calendar.YEAR);
+                        int month = cal.get(Calendar.MONTH) + 1;
+                        int day = cal.get(Calendar.DATE);
+                        int week = cal.get(Calendar.DAY_OF_WEEK) - 1;
 
-            insertSql = "INSERT INTO ACCOMMODATE (flag,num) " +
-                    "VALUES('" + FLAG + "'," + NUM + ")";
-            System.out.println(insertSql);
-            statement.execute(insertSql);
-            insertSql = "INSERT INTO ACCOMMODATE (flag,num) " +
-                    "VALUES('" + FLAG2 + "'," + NUM2 + ")";
-            System.out.println(insertSql);
-            statement.execute(insertSql);
-            //-設定例假日
-            if (!lists.isEmpty()) {
-                for (Date date : lists) {
-                    Calendar cal = Calendar.getInstance();
-                    cal.setTime(date);
-                    //System.out.println("********插入日期:" + sdf.format(date) + "***********");
+                        String monthStr = "", dayStr = "";
+                        if (month / 10 == 0) {
+                            monthStr = "0" + String.valueOf(month);
+                        } else {
+                            monthStr = String.valueOf(month);
+                        }
+                        if (day / 10 == 0) {
+                            dayStr = "0" + String.valueOf(day);
+                        } else {
+                            dayStr = String.valueOf(day);
+                        }
 
-                    int year = cal.get(Calendar.YEAR);
-                    int month = cal.get(Calendar.MONTH) + 1;
-                    int day = cal.get(Calendar.DATE);
-                    int week = cal.get(Calendar.DAY_OF_WEEK) - 1;
+                        lastWorkDate = getLastWorkDay(date);
 
-                    String monthStr = "", dayStr = "";
-                    if (month / 10 == 0) {
-                        monthStr = "0" + String.valueOf(month);
-                    } else {
-                        monthStr = String.valueOf(month);
-                    }
-                    if (day / 10 == 0) {
-                        dayStr = "0" + String.valueOf(day);
-                    } else {
-                        dayStr = String.valueOf(day);
-                    }
+                        //T_CMM_TCLD表字段：年，月，日，日期，标识（1为假日，0为工作日），周几，上一个工作日，下一个工作日
 
-                    lastWorkDate = getLastWorkDay(date);
-
-                    //T_CMM_TCLD表字段：年，月，日，日期，标识（1为假日，0为工作日），周几，上一个工作日，下一个工作日
-
-                    // System.out.println(year+","+monthStr+","+dayStr+","+sdf.format(date));
+                        // System.out.println(year+","+monthStr+","+dayStr+","+sdf.format(date));
 //                    System.out.println(insertSql);
-                    if (isHoliday(date) == 0) {
-                        nextWorkDate = date;
-                        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
-                        String dateString = sdf2.format(nextWorkDate);
-                        System.out.println(dateString);
-                        for (int i = 1; i <= 3; i++) {
-                            insertSql = "insert into sessions (dat,reserved,sessions_name,start_time,end_time,accommodate_flag,extra)\n" +
-                                    "VALUES('" + dateString + "'," + 0 + ",'" + sessionName[i] + "','" + startTime[i] + "','" + endTime[i] + "','" + FLAG2 + "'," + 0 + ")";
-                            System.out.println("平日 " + insertSql);
-                            statement.execute(insertSql);
+                        if (isHoliday(date) == 0) {
+                            nextWorkDate = date;
+                            SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
+                            String dateString = sdf2.format(nextWorkDate);
+                            System.out.println(dateString);
+                            for (int i = 1; i <= 3; i++) {
+                                insertSql = "insert into sessions (dat,reserved,sessions_name,start_time,end_time,accommodate_flag,extra)\n" +
+                                        "VALUES('" + dateString + "'," + 0 + ",'" + sessionName[i] + "','" + startTime[i] + "','" + endTime[i] + "','" + FLAG2 + "'," + 0 + ")";
+                                System.out.println("平日 " + insertSql);
+                                statement.execute(insertSql);
+                            }
                         }
-                    }
-                    if (isHoliday(date) != 0) {
-                        nextWorkDate = date;
-                        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
-                        String dateString = sdf2.format(nextWorkDate);
-                        System.out.println(dateString);
-                        insertSql = "INSERT INTO HOLIDAY (HOLIDAT, TITLE,ACCOMMODATE_FLAG) " +
-                                "VALUES('" + dateString + "','" + HolidayTitle + "','" + FLAG + "')";
-                        statement.execute(insertSql);
-                        for (int i = 0; i <= 3; i++) {
-                            insertSql = "insert into sessions (dat,reserved,sessions_name,start_time,end_time,accommodate_flag,extra)\n" +
-                                    "VALUES('" + dateString + "'," + 0 + ",'" + sessionName[i] + "','" + startTime[i] + "','" + endTime[i] + "','" + FLAG + "'," + 0 + ")";
-                            System.out.println("假日 " + insertSql);
+                        if (isHoliday(date) != 0) {
+                            nextWorkDate = date;
+                            SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
+                            String dateString = sdf2.format(nextWorkDate);
+                            System.out.println(dateString);
+                            insertSql = "INSERT INTO HOLIDAY (HOLIDAT, TITLE,ACCOMMODATE_FLAG) " +
+                                    "VALUES('" + dateString + "','" + HolidayTitle + "','" + FLAG + "')";
                             statement.execute(insertSql);
-                        }
+                            for (int i = 0; i <= 3; i++) {
+                                insertSql = "insert into sessions (dat,reserved,sessions_name,start_time,end_time,accommodate_flag,extra)\n" +
+                                        "VALUES('" + dateString + "'," + 0 + ",'" + sessionName[i] + "','" + startTime[i] + "','" + endTime[i] + "','" + FLAG + "'," + 0 + ")";
+                                System.out.println("假日 " + insertSql);
+                                statement.execute(insertSql);
+                            }
 
 
+                        }
                     }
                 }
-            }
 
-            conn.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+                conn.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

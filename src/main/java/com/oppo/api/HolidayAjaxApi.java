@@ -96,7 +96,7 @@ public class HolidayAjaxApi {
         String dateString = sdf.format(removeDat);
         List<Sessions> sessionsList = sessionsDao.findAllByDatOrderByStartTime(dateString);
         if (sessionsList != null && sessionsList.size() == 4) {
-            System.out.print(sessionsList);
+            //System.out.print(sessionsList);
             Sessions sessions = sessionsList.get(0);
             sessionsDao.delete(sessions);
             flag = true;

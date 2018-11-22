@@ -65,7 +65,6 @@ public class AccommodateAjaxApi {
             } else {
                 //修改'當天所有'場次場次容納人數
                 List<Sessions> sessionsList = sessionsDao.findAllByDat(spDat);
-                System.out.println(sessionsList);
                 for (Sessions sessions : sessionsList) {
                     sessions.setExtra(spNum);
                     sessionsDao.saveAndFlush(sessions);

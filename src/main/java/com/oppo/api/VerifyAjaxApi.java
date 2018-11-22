@@ -38,7 +38,7 @@ public class VerifyAjaxApi {
 
     @RequestMapping(value = "/execute", method = RequestMethod.PUT)
     public void verifyExecute(@RequestBody String ids) {
-        System.out.println(ids);
+        //System.out.println(ids);
         String[] idArr = ids.split(",");
         if (idArr.length > 0 && "1".equals(idArr[0])) {
             Status status = statusDao.findById(5).get();
@@ -50,7 +50,7 @@ public class VerifyAjaxApi {
                     preorderDao.save(preOrder);
                 }
             }
-        } else if (idArr.length > 0 && "2".equals(idArr[0])) {
+        } else if (idArr.length > 0 && "2".equals(idArr[0])) { //不通過
             Status status = statusDao.findById(4).get();
             for (int i = 1; i < idArr.length; i++) {
                 PreOrder preOrder = preorderDao.findById(idArr[i]).get();
@@ -61,9 +61,25 @@ public class VerifyAjaxApi {
                     Sessions sessions = preOrder.getSessions();
                     sessions.setReserved(sessions.getReserved() - preOrder.getGroupNum());
                     sessionsDao.saveAndFlush(sessions);
+                    delDir(new File(uploadingdir, preOrder.getId()));
                 }
             }
         }
 
+    }
+
+    public void delDir(File path) {
+        if (!path.exists()) {
+            return;
+        }
+        if (path.isFile()) {
+            path.delete();
+            return;
+        }
+        File[] files = path.listFiles();
+        for (int i = 0; i < files.length; i++) {
+            delDir(files[i]);
+        }
+        path.delete();
     }
 }

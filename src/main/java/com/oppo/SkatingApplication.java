@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class SkatingApplication {
 
     public static void main(String[] args) {
-        //InsertHoliday.main(args);
+        InsertHoliday.main(args);
         SpringApplication.run(SkatingApplication.class, args);
     }
 }
