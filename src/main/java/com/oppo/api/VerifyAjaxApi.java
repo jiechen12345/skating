@@ -99,9 +99,9 @@ public class VerifyAjaxApi {
                 LOGGER.info(enrollment.getId());
                 Long maxId = Long.parseLong(enrollment.getId());
                 maxId = maxId + 1;
-                enrollmentDao.saveAndFlush(new Enrollment(maxId.toString(), preOrder));
+                enrollmentDao.saveAndFlush(new Enrollment(maxId.toString(), preOrder, false, false));
             } else {
-                enrollmentDao.saveAndFlush(new Enrollment(sessionId + "001", preOrder));
+                enrollmentDao.saveAndFlush(new Enrollment(sessionId + "001", preOrder, false, false));
             }
         } catch (Exception e) {
             LOGGER.info(e.toString());

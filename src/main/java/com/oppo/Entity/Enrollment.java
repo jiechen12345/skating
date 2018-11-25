@@ -1,5 +1,7 @@
 package com.oppo.Entity;
 
+import com.oppo.Entity.PreOrder;
+
 import javax.persistence.Id;
 
 import javax.persistence.Column;
@@ -19,14 +21,9 @@ public class Enrollment {
     @ManyToOne(targetEntity = PreOrder.class)
     private PreOrder preOrder;
 
-    private  Boolean arrived=false;
-
+    private Boolean arrived = false;
+    private Boolean printed = false;
     private Date enrollTime;
-
-    public Enrollment(String id, PreOrder preOrder) {
-        this.id = id;
-        this.preOrder = preOrder;
-    }
 
     public Enrollment(String id, PreOrder preOrder, Boolean arrived, Date enrollTime) {
         this.id = id;
@@ -34,7 +31,12 @@ public class Enrollment {
         this.arrived = arrived;
         this.enrollTime = enrollTime;
     }
-
+    public Enrollment(String id, PreOrder preOrder,Boolean arrived,Boolean printed) {
+        this.id = id;
+        this.preOrder = preOrder;
+        this.arrived=arrived;
+        this.printed=printed;
+    }
     public Enrollment() {
     }
 
@@ -64,6 +66,14 @@ public class Enrollment {
 
     public Date getEnrollTime() {
         return enrollTime;
+    }
+
+    public Boolean getPrinted() {
+        return printed;
+    }
+
+    public void setPrinted(Boolean printed) {
+        this.printed = printed;
     }
 
     public void setEnrollTime(Date enrollTime) {
