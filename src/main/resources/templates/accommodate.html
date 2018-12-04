@@ -1,232 +1,125 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
+
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <link rel="stylesheet" href="../static/css/bootstrap-datetimepicker.min.css" media="screen"/>
-    <link rel="stylesheet" href="../static/css/bootstrap-datetimepicker.css" media="screen"/>
     <title>開放人數管理</title>
-    <!-- Bootstrap core CSS -->
-    <link href="../static/css/bootstrap.min.css" rel="stylesheet"/>
-    <link href="../static/css/bootstrap-jie.css" rel="stylesheet"/>
-    <link href="../static/css/bootstrap-table.css" rel="stylesheet">
-    <!-- Custom styles for this tmemberlate -->
-    <link href="../static/css/dashboard.css" rel="stylesheet"/>
-    <link href="../static/css/bootstrap-table.css" rel="stylesheet">
 
-    <!-- Moment.js v2.20.0 -->
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.0/moment.min.js"></script>
-    <script src="../static/js/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
-    <!--<script src="../static/js/moment.js" crossorigin="anonymous"></script>-->
-    <script>
+    <!-- Bootstrap Core CSS -->
+    <link href="../static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- MetisMenu CSS -->
+    <link href="../static/vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="../static/dist/css/sb-admin-2.css" rel="stylesheet">
+    <!-- Custom Fonts -->
+    <link href="../static/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <!-- Custom Fonts -->
+    <link href="../static/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
 
-        /**
-         * toast 小提示框
-         * @param tipTxt 提示内容
-         */
-        function popToast(tipTxt) {
-            var $popToast = $(".pop-toast");
-            $popToast.remove();
-            var popToastHtml = '<div class="pop-toast">\n' +
-                '            <p class="toast-tip">' + tipTxt + '</p>\n' +
-                '        </div>';
-            $popToast = $(popToastHtml);
-            $("body").append($popToast);
-            setTimeout(function () {
-                $popToast.fadeOut();
-            }, 1000);
-        }
-
-        function findSessionsBySpecialDatAjax(specialDat) {
-            //alert(specialDat);
-            if (specialDat != null && specialDat != "") {
-                $.ajax({
-                    contentType: 'application/json; charset=UTF-8',
-                    type: "post",
-                    data: (specialDat),
-                    url: "/accommodate/findSessionsBySpecialDat",
-                    success: function (data) {
-                        var str = "";
-                        console.log(data);
-                        str +="<option value='0'>" + "</option>";
-                        $.each(data, function (index, value) {
-                            str += "<option value='" + value.id + "'>" + value.startTime + '-' + value.endTime + "</option>";
-                        });
-                        $("#sessionsId").empty();
-                        $("#sessionsId").append(" ");
-                        $("#sessionsId").append(str);
-                    },
-                    error: function (jqXHR, exception) {
-                        ajaxError(jqXHR, exception);
-                        $("#sessionsId").empty();
-                    },
-                });
-            } else {
-
-                $("#sessionsId").empty();
-            }
-        }
-    </script>
-    <style>
-        .pop-toast {
-            max-width: 35%;
-        }
-    </style>
 </head>
 
 <body>
-<!--引入topbar-->
-<div th:replace="common/bar::top_bar"></div>
 
-<div class="container-fluid">
-    <div class="row">
-        <!--引入sidebar-->
-        <div th:replace="common/bar::side_bar(activeUrl='accommodate')"></div>
-        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
-            <div container-fluid>
-                <form id='myForm' class="needs-validation" novalidate>
-                    <div class="modal-content">
-                        <div class="modal-body">
-                            <form class="form-group">
-                                <div class="col-md mb-0">
-                                    <label for="normaldayNum">平日開放人數</label>
-                                    <input name="normaldayNum" id="normaldayNum" maxlength="3" size="3" type="text"
-                                           th:value="${normaldayNum!=null}?${normaldayNum}"
-                                           class="form-control"
-                                           onkeyup="value=value.replace(/[^\d]/g,'') "/>
-                                </div>
-                                <div class="col-md mb-0">
-                                    <label for="holidayNum">假日開放人數</label>
-                                    <input name="holidayNum" id="holidayNum" maxlength="3" size="3" type="text"
-                                           th:value="${holidayNum!=null}?${holidayNum}"
-                                           class="form-control"
-                                           onkeyup="value=value.replace(/[^\d]/g,'') "/>
-                                </div>
-                                <div class="col-md mb-0">
-                                    <label for="specialDat">追加特定場次＆人數</label>
-                                    <div class="form-inline">
-                                        <input id='specialDat' name="specialDat" type="text" placeholder="2018-12-30"
-                                               class="form-control datetimepickerDat"
-                                               onchange="findSessionsBySpecialDatAjax($(this).val())" 　>
-                                        <select class="form-control selector" name="sessionsId" id="sessionsId">
+<div id="wrapper">
 
-                                        </select>
+    <div th:replace="common/bar2"></div>
+    <!------->
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-md-9 ml-sm-auto col-lg-16 px-4">
+                <div class="panel panel-default">
+                    <form id='myForm' class="needs-validation" novalidate>
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <form class="form-group">
+                                    <div class="col-md mb-0">
+                                        <label for="normaldayNum">平日開放人數</label>
+                                        <input name="normaldayNum" id="normaldayNum" maxlength="3" size="3" type="text"
+                                               class="form-control"
+                                        />
                                     </div>
-                                    <div class="clearfix"></div>
-                                    <input id='specialDayNum' name="specialDayNum" type="text"
-                                           class="form-control " 　>
-                                    <div class="clearfix"></div>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default btn-success" data-dismiss="modal"
-                                    th:onclick="'javascript:save()'">Save
-                            </button>
-                            <button class="btn btn-secondary" onclick="location.reload();" id="reset" name="reset"
-                                    type="button">Cancel
-                            </button>
-                        </div>
-                    </div>
+                                    <div class="col-md mb-0">
+                                        <label for="holidayNum">假日開放人數</label>
+                                        <input name="holidayNum" id="holidayNum" maxlength="3" size="3" type="text"
+                                               class="form-control"
+                                        />
+                                    </div>
+                                    <div class="col-md mb-0">
+                                        <label for="specialDat">追加特定場次＆人數</label>
+                                        <div class="form-inline">
+                                            <input id='specialDat' name="specialDat" type="text" placeholder="2018-12-30"
+                                                   class="form-control datetimepickerDat"
+                                                   onchange="findSessionsBySpecialDatAjax($(this).val())" 　>
+                                            <select class="form-control selector" name="sessionsId" id="sessionsId">
 
-                </form>
+                                            </select>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                        <input id='specialDayNum' name="specialDayNum" type="text"
+                                               class="form-control " 　>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default btn-success" data-dismiss="modal"
+                                        onclick="'javascript:save()'">Save
+                                </button>
+                                <button class="btn btn-secondary" onclick="location.reload();" id="reset" name="reset"
+                                        type="button">Cancel
+                                </button>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+
             </div>
-
-        </main>
+        </div>
     </div>
+
+
+    <!-- /#page-wrapper -->
+
 </div>
+<!-- /#wrapper -->
 
-<!-- Icons -->
-<script src="../static/js/bootstrap-datetimepicker.min.js"></script>
-<script src="../static/js/bootstrap-datetimepicker.js"></script>
-<script src="../static/js/bootstrap-datetimepicker.zh-TW.js"></script>
+<!-- jQuery -->
+<script src="../static/vendor/jquery/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="../static/vendor/bootstrap/js/bootstrap.min.js"></script>
+
+<!-- Metis Menu Plugin JavaScript -->
+<script src="../static/vendor/metisMenu/metisMenu.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="../static/dist/js/sb-admin-2.js"></script>
+
+<!-- Page-Level Demo Scripts - Notifications - Use for reference -->
 <script>
-
-    function save() {
-        var normaldayNum = $('#normaldayNum').val();
-        var holidayNum = $('#holidayNum').val();
-        var specialDat = $('#specialDat').val();
-        var sessionsId = $('#sessionsId').val();
-        //console.log(sessionsId);
-        var specialDayNum = $('#specialDayNum').val();
-        if (normaldayNum == '') {
-            popToast("請設定平日開放人數 ！");
-            $('#normaldayNum').focus();
-
-            return;
-        } else if (holidayNum == '') {
-            popToast("請設定假日開放人數 ！");
-            $('#holidayNum').focus();
-            return;
-        } else if (specialDat != '' && specialDayNum == '') {
-            popToast("請設定特定日期追加人數或者不指定特定日期");
-            $('#specialDayNum').focus();
-            return;
-        } else if (specialDat == '' && specialDayNum != '') {
-            popToast("請設定特定日期或者不設定特定日期追加人數");
-            $('#specialDat').focus();
-            return;
-        } else {
-            $.ajax({
-                contentType: 'application/json; charset=UTF-8',
-                type: "post",
-                data: JSON.stringify({
-                    'normaldayNum': normaldayNum,
-                    'holidayNum': holidayNum,
-                    'specialDat': specialDat,
-                    'sessionsId': sessionsId,
-                    'specialDayNum': specialDayNum
-                }),
-                async: false,
-                url: "/accommodate/save",
-                success: function (data) {
-                    popToast("存 檔 完 成 ！");
-                    setTimeout("location.reload()", 900);
-                },
-                error: function (jqXHR, exception) {
-                    ajaxError(jqXHR, exception);
-                },
-            });
-        }
-    }
-
-    $(".datetimepickerDat").datetimepicker({
-        startView: 2,
-        minView: 2,
-        autoclose: true,
-        todayBtn: true,
-        todayHighlight: true,
-        format: 'yyyy-mm-dd',
-        language: 'zh-TW'
-    });
-
-    function ajaxError(jqXHR, exception) {
-        var msg = '';
-        if (jqXHR.status === 0) {
-            msg = 'Not connect.\n Verify Network.';
-        } else if (jqXHR.status == 404) {
-            msg = 'Requested page not found. [404]';
-        } else if (jqXHR.status == 500) {
-            msg = 'Internal Server Error [500].';
-        } else if (exception === 'parsererror') {
-            msg = 'Requested JSON parse failed.';
-        } else if (exception === 'timeout') {
-            msg = 'Time out error.';
-        } else if (exception === 'abort') {
-            msg = 'Ajax request aborted.';
-        } else {
-            msg = 'Uncaught Error.\n' + jqXHR.responseText;
-        }
-        console.log(msg);
-    }
+    // tooltip demo
+    $('.tooltip-demo').tooltip({
+        selector: "[data-toggle=tooltip]",
+        container: "body"
+    })
+    // popover demo
+    $("[data-toggle=popover]")
+        .popover()
 </script>
-<!-- Icons -->
-<script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
-<script>
-    feather.replace()
-</script>
+
 </body>
+
 </html>

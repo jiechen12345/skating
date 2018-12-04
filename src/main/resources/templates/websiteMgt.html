@@ -7,10 +7,9 @@
     <meta name="author" content="">
 
     <title>假日管理</title>
-    <link href="../static/css/bootstrap.min.css" rel="stylesheet"/>
 
     <!-- Custom styles for this tmemberlate -->
-    <link href="../static/css/dashboard.css" rel="stylesheet"/>
+
     <link href="../static/css/bootstrap-jie.css" rel="stylesheet"/>
     <link href="../static/css/bootstrap-table.css" rel="stylesheet">
     <!-- jQuery v1.9.1 -->
@@ -21,6 +20,22 @@
     <link href="../static/fullcalendar/fullcalendar.min.css" rel="stylesheet"/>
     <link href="../static/fullcalendar/fullcalendar.print.css" rel="stylesheet" media="print"/>
     <script src="../static/fullcalendar/fullcalendar.min.js" rel="stylesheet"></script>
+
+
+    <!-- Bootstrap Core CSS -->
+    <link href="../static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- MetisMenu CSS -->
+    <link href="../static/vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="../static/dist/css/sb-admin-2.css" rel="stylesheet">
+    <!-- Custom Fonts -->
+    <link href="../static/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <!-- Custom Fonts -->
+    <link href="../static/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <style>
         th {
             background-color: #DDDDDD;
@@ -57,165 +72,187 @@
 </head>
 
 <body>
-<!--引入topbar-->
-<div th:replace="common/bar::top_bar"></div>
+<div id="wrapper">
 
-<div class="container-fluid">
-    <div class="row">
-        <!--引入sidebar-->
-        <div th:replace="common/bar::side_bar(activeUrl='main')"></div>
-        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+    <div th:replace="common/bar2"></div>
 
+    <div id="page-wrapper">
+        <div class="row">
             <div id="calendar"></div>
-
-            <script>
-                var Today = new Date();
-                var now = Today.getFullYear() + "-" + (Today.getMonth() + 1) + "-" + Today.getDate();
-                $("#calendar").fullCalendar({
-                    themeSystem: "standard",
-                    // 參數設定[註1]
-                    header: {
-                        left: '',
-                        center: 'title',
-                        right: 'prev,next today'
-                    },
-                    buttonText: {
-                        today: 'Today',
-                        prev: '<',
-                        next: '>',
-                    },
-                    monthNames: ["Jan.", "Feb.", "Mar.", "Apr.", "May.", "June.", "July.", "Aug.", "Sept.", "Oct.", "Nov.", "Dec."],
-                    monthNamesShort: ["Jan.", "Feb.", "Mar.", "Apr.", "May.", "June.", "July.", "Aug.", "Sept.", "Oct.", "Nov.", "Dec."],
-                    dayNames: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-                    dayNamesShort: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-                    defaultDate: now, // 起始日期navLinks: true, // can click day/week names to navigate views
-                    selectable: true,
-                    selectHelper: true,
-                    editable: true,
-                    eventLimit: true, // allow "more" link when too many events
-                    eventStartEditable: false,
-                    eventBackgroundColor: "#cce8cf",
-                    eventColor: "#17A2B8",
-                    timeFormat: 'H:mm',
-                    dayClick: function (date, event, view) {
-                        console.log('add event');
-                        var data1 = JSON.stringify(date._d);
-                        $.ajax({
-                            url: "holiday/add",
-                            async: true,
-                            contentType: 'application/json; charset=UTF-8',
-                            type: "POST",
-                            data: data1,
-                            dataType: "json",
-                            success: function (data) {
-                                console.log(data);
-                                if (data.extra != 9999) {
-                                    var n = data.accommodate.num + data.extra;
-                                    if(n<0){n=0};
-                                    $('#calendar').fullCalendar('renderEvent',
-                                        {
-                                            title: '  開放人數: ' + n,
-                                            start: new Date(Date.parse(data.dat + ' ' + data.startTime)),
-                                            end: new Date(Date.parse(data.dat + ' ' + data.endTime)),
-                                        }, true);
-                                } else {
-                                    popToast("每天開放場次不超過四場!");
-                                }
-                            },
-                            error: function (err) {
-                                console.log(err)
-                            }
-                        });
-
-                    },
-                    eventClick: function (date, event, view) {
-                        console.log('delete event');
-                        var data1 = JSON.stringify(date.start._i);
-                        $.ajax({
-                            url: "holiday/remove",
-                            async: true,
-                            contentType: 'application/json; charset=UTF-8',
-                            type: "DELETE",
-                            data: data1,
-                            success: function (data) {
-                                console.log(data);
-                                console.log(date);
-                                if (data) {
-                                    location.reload();
-                                    //$('#calendar').fullCalendar('removeEvents', date._id);
-                                } else {
-                                    popToast("只能刪除加開場次!");
-                                }
-                            },
-                            error: function (err) {
-                                console.log(err)
-                            }
-                        });
-                    },
-                    events: function (start, end, timezone, callback) {
-                        var startDat = start.format('YYYY-MM-DD');
-                        var endDat = end.format('YYYY-MM-DD');
-                        var data1 = JSON.stringify({"startDat": startDat, "endDat": endDat});
-                        $.ajax({
-                            url: "holiday/load",
-                            async: true,
-                            contentType: 'application/json; charset=UTF-8',
-                            type: "POST",
-                            data: data1,
-                            dataType: "json",
-                            success: function (data) {
-                                $('#calendar').fullCalendar('removeEvents', function (calEvent) {
-                                    return true;
-                                });
-                                //console.log(data);
-                                var events = [];
-                                $.each(data, function (key, value) {
-                                    if (value.dat != null) {
-                                        var n = value.accommodate.num + value.extra;
-                                        if(n<0){n=0};
-                                        events.push({
-                                            title: '  開放人數: ' + n,
-                                            start: new Date(Date.parse(value.dat + ' ' + value.startTime)),
-                                            //start: new Date(Date.parse(s)),
-                                            end: new Date(Date.parse(value.dat + ' ' + value.endTime)),
-                                            //end: new Date(Date.parse(s2)),
-                                            //allDay: true
-                                        });
-
-                                    }
-
-                                    /* var eventData;
-                                    console.log(value.start);
-                                    eventData = {
-                                        title: value.title,
-                                        start: value.start,
-                                        end: value.end
-                                    };
-                                    $('#calendar').fullCalendar('renderEvent', eventData, true); */
-                                });
-                                callback(events);
-                            },
-                            error: function (err) {
-                                console.log('err: ' + err)
-                            }
-                        });
-                    },
-
-                });
-                // $('#calendar').fullCalendar('renderEvent', {
-                //     title: '明天的活動',
-                //     start: moment().add(1, 'days').format('YYYY-MM-DD')
-                // });
-            </script>
-
-
-        </main>
+        </div>
     </div>
+
 </div>
-<!-- Icons -->
-<script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
 <script>
-    feather.replace()
+    var Today = new Date();
+    var now = Today.getFullYear() + "-" + (Today.getMonth() + 1) + "-" + Today.getDate();
+    $("#calendar").fullCalendar({
+        themeSystem: "standard",
+        // 參數設定[註1]
+        header: {
+            left: '',
+            center: 'title',
+            right: 'prev,next today'
+        },
+        buttonText: {
+            today: 'Today',
+            prev: '<',
+            next: '>',
+        },
+        monthNames: ["Jan.", "Feb.", "Mar.", "Apr.", "May.", "June.", "July.", "Aug.", "Sept.", "Oct.", "Nov.", "Dec."],
+        monthNamesShort: ["Jan.", "Feb.", "Mar.", "Apr.", "May.", "June.", "July.", "Aug.", "Sept.", "Oct.", "Nov.", "Dec."],
+        dayNames: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+        dayNamesShort: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+        defaultDate: now, // 起始日期navLinks: true, // can click day/week names to navigate views
+        selectable: true,
+        selectHelper: true,
+        editable: true,
+        eventLimit: true, // allow "more" link when too many events
+        eventStartEditable: false,
+        eventBackgroundColor: "#cce8cf",
+        eventColor: "#17A2B8",
+        timeFormat: 'H:mm',
+        dayClick: function (date, event, view) {
+            console.log('add event');
+            var data1 = JSON.stringify(date._d);
+            $.ajax({
+                url: "holiday/add",
+                async: true,
+                contentType: 'application/json; charset=UTF-8',
+                type: "POST",
+                data: data1,
+                dataType: "json",
+                success: function (data) {
+                    console.log(data);
+                    if (data.extra != 9999) {
+                        var n = data.accommodate.num + data.extra;
+                        if (n < 0) {
+                            n = 0
+                        }
+                        ;
+                        $('#calendar').fullCalendar('renderEvent',
+                            {
+                                title: '  開放人數: ' + n,
+                                start: new Date(Date.parse(data.dat + ' ' + data.startTime)),
+                                end: new Date(Date.parse(data.dat + ' ' + data.endTime)),
+                            }, true);
+                    } else {
+                        popToast("每天開放場次不超過四場!");
+                    }
+                },
+                error: function (err) {
+                    console.log(err)
+                }
+            });
+
+        },
+        eventClick: function (date, event, view) {
+            console.log('delete event');
+            var data1 = JSON.stringify(date.start._i);
+            $.ajax({
+                url: "holiday/remove",
+                async: true,
+                contentType: 'application/json; charset=UTF-8',
+                type: "DELETE",
+                data: data1,
+                success: function (data) {
+                    console.log(data);
+                    console.log(date);
+                    if (data) {
+                        location.reload();
+                        //$('#calendar').fullCalendar('removeEvents', date._id);
+                    } else {
+                        popToast("只能刪除加開場次!");
+                    }
+                },
+                error: function (err) {
+                    console.log(err)
+                }
+            });
+        },
+        events: function (start, end, timezone, callback) {
+            var startDat = start.format('YYYY-MM-DD');
+            var endDat = end.format('YYYY-MM-DD');
+            var data1 = JSON.stringify({"startDat": startDat, "endDat": endDat});
+            $.ajax({
+                url: "holiday/load",
+                async: true,
+                contentType: 'application/json; charset=UTF-8',
+                type: "POST",
+                data: data1,
+                dataType: "json",
+                success: function (data) {
+                    $('#calendar').fullCalendar('removeEvents', function (calEvent) {
+                        return true;
+                    });
+                    //console.log(data);
+                    var events = [];
+                    $.each(data, function (key, value) {
+                        if (value.dat != null) {
+                            var n = value.accommodate.num + value.extra;
+                            if (n < 0) {
+                                n = 0
+                            }
+                            ;
+                            events.push({
+                                title: '  開放人數: ' + n,
+                                start: new Date(Date.parse(value.dat + ' ' + value.startTime)),
+                                //start: new Date(Date.parse(s)),
+                                end: new Date(Date.parse(value.dat + ' ' + value.endTime)),
+                                //end: new Date(Date.parse(s2)),
+                                //allDay: true
+                            });
+
+                        }
+
+                        /* var eventData;
+                        console.log(value.start);
+                        eventData = {
+                            title: value.title,
+                            start: value.start,
+                            end: value.end
+                        };
+                        $('#calendar').fullCalendar('renderEvent', eventData, true); */
+                    });
+                    callback(events);
+                },
+                error: function (err) {
+                    console.log('err: ' + err)
+                }
+            });
+        },
+
+    });
+    // $('#calendar').fullCalendar('renderEvent', {
+    //     title: '明天的活動',
+    //     start: moment().add(1, 'days').format('YYYY-MM-DD')
+    // });
 </script>
+
+
+<!--&lt;!&ndash; jQuery &ndash;&gt;-->
+<!--<script src="../static/vendor/jquery/jquery.min.js"></script>-->
+
+<!-- Bootstrap Core JavaScript -->
+<script src="../static/vendor/bootstrap/js/bootstrap.min.js"></script>
+
+<!-- Metis Menu Plugin JavaScript -->
+<script src="../static/vendor/metisMenu/metisMenu.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="../static/dist/js/sb-admin-2.js"></script>
+
+<!-- Page-Level Demo Scripts - Notifications - Use for reference -->
+<script>
+    // tooltip demo
+    $('.tooltip-demo').tooltip({
+        selector: "[data-toggle=tooltip]",
+        container: "body"
+    })
+    // popover demo
+    $("[data-toggle=popover]")
+        .popover()
+</script>
+
 </body>
 </html>
