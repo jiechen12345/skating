@@ -7,6 +7,7 @@ import com.oppo.Entity.Enrollment;
 import com.oppo.Entity.PreOrder;
 import com.oppo.Entity.Sessions;
 import com.oppo.Entity.Status;
+import com.oppo.common.MailUtil;
 import com.oppo.dao.EnrollmentDao;
 import com.oppo.dao.PreorderDao;
 import com.oppo.dao.SessionsDao;
@@ -58,34 +59,8 @@ public class VerifyAjaxApi {
     private SessionsDao sessionsDao;
     @Autowired
     private EnrollmentDao enrollmentDao;
-
-    private static JavaMailSenderImpl mailSender = null;
-    //--MAIL
-    private String from;
-
-    private String to;
-
-    private String subject;
-
-    private String content;
-    @Value("${spring.mail.host}")
-     String host;
-    @Value("${spring.mail.username}")
-     String username;
-    @Value("${spring.mail.password}")
-     String password;
-    @Value("${spring.mail.properties.mail.smtp.auth}")
-     String auth;
-    //    @Value("${spring.mail.properties.mail.smtp.socketFactory.class}")
-////    String ssl_enable;
-    @Value("${spring.mail.properties.mail.smtp.starttls.enable}")
-    String starttls_enable;
-    @Value("${spring.mail.properties.mail.smtp.starttls.required}")
-    String required;
-
-    static {
-
-    }
+    @Autowired
+    MailUtil mailUtil;
 
     @RequestMapping(value = "/execute", method = RequestMethod.PUT)
     public void verifyExecute(@RequestBody String ids) {
@@ -156,27 +131,32 @@ public class VerifyAjaxApi {
             LOGGER.info(e.toString());
         }
     }
-    public void sendMail(PreOrder preOrder) {
-        mailSender = new JavaMailSenderImpl();
-        // 设定mail server
-        mailSender.setHost(host);
-        mailSender.setPort(-1);
-        mailSender.setUsername(username);
-        mailSender.setPassword(password);
-        mailSender.setDefaultEncoding("UTF-8");
-        Properties prop = new Properties();
-        prop.put("mail.smtp.auth", auth);
-        mailSender.setJavaMailProperties(prop);
-        subject = "測試使用 SMTP SSL發信"; // 信件標題
-        content = "<html><head><title>測試</title></head><body>這是一封測試信，收到請自行刪除 </body></html>"; // 內容
-        String targetMail = "tina3717805@gmail.com";  // 對方郵箱
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(username);
-        message.setTo(targetMail);
-        message.setSubject(subject);
-        message.setText(content);
-        mailSender.send(message);
+    public void sendMail(PreOrder preOrder) {
+        String to = "tina3717805@gmail.com";
+        mailUtil.sendSimpleMail(to, "主题：测试", "hhhhhhhh");
+
+
+//        mailSender = new JavaMailSenderImpl();
+//        // 设定mail server
+//        mailSender.setHost(host);
+//        mailSender.setPort(-1);
+//        mailSender.setUsername(username);
+//        mailSender.setPassword(password);
+//        mailSender.setDefaultEncoding("UTF-8");
+//        Properties prop = new Properties();
+//        prop.put("mail.smtp.auth", auth);
+//        mailSender.setJavaMailProperties(prop);
+//        subject = "測試使用 SMTP SSL發信"; // 信件標題
+//        content = "<html><head><title>測試</title></head><body>這是一封測試信，收到請自行刪除 </body></html>"; // 內容
+//        String targetMail = "tina3717805@gmail.com";  // 對方郵箱
+//
+//        SimpleMailMessage message = new SimpleMailMessage();
+//        message.setFrom(username);
+//        message.setTo(targetMail);
+//        message.setSubject(subject);
+//        message.setText(content);
+//        mailSender.send(message);
 
 
     }
