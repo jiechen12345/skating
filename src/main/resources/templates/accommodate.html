@@ -9,7 +9,12 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
+    <link rel="stylesheet" href="../static/css/bootstrap-datetimepicker.min.css" media="screen"/>
+    <link rel="stylesheet" href="../static/css/bootstrap-datetimepicker.css" media="screen"/>
+
     <title>開放人數管理</title>
+
+    <link href="../static/css/bootstrap-jie.css" rel="stylesheet"/>
 
     <!-- Bootstrap Core CSS -->
     <link href="../static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -27,6 +32,61 @@
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+
+    <script>
+
+        /**
+         * toast 小提示框
+         * @param tipTxt 提示内容
+         */
+        function popToast(tipTxt) {
+            var $popToast = $(".pop-toast");
+            $popToast.remove();
+            var popToastHtml = '<div class="pop-toast">\n' +
+                '            <p class="toast-tip">' + tipTxt + '</p>\n' +
+                '        </div>';
+            $popToast = $(popToastHtml);
+            $("body").append($popToast);
+            setTimeout(function () {
+                $popToast.fadeOut();
+            }, 1000);
+        }
+
+        function findSessionsBySpecialDatAjax(specialDat) {
+            //alert(specialDat);
+            if (specialDat != null && specialDat != "") {
+                $.ajax({
+                    contentType: 'application/json; charset=UTF-8',
+                    type: "post",
+                    data: (specialDat),
+                    url: "/accommodate/findSessionsBySpecialDat",
+                    success: function (data) {
+                        var str = "";
+                        console.log(data);
+                        str += "<option value='0'>" + "</option>";
+                        $.each(data, function (index, value) {
+                            str += "<option value='" + value.id + "'>" + value.startTime + '-' + value.endTime + "</option>";
+                        });
+                        $("#sessionsId").empty();
+                        $("#sessionsId").append(" ");
+                        $("#sessionsId").append(str);
+                    },
+                    error: function (jqXHR, exception) {
+                        ajaxError(jqXHR, exception);
+                        $("#sessionsId").empty();
+                    },
+                });
+            } else {
+
+                $("#sessionsId").empty();
+            }
+        }
+    </script>
+    <style>
+        .pop-toast {
+            max-width: 35%;
+        }
+    </style>
 
 </head>
 
@@ -47,19 +107,22 @@
                                     <div class="col-md mb-0">
                                         <label for="normaldayNum">平日開放人數</label>
                                         <input name="normaldayNum" id="normaldayNum" maxlength="3" size="3" type="text"
+                                               th:value="${normaldayNum!=null}?${normaldayNum}"
                                                class="form-control"
-                                        />
+                                               onkeyup="value=value.replace(/[^\d]/g,'') "/>
                                     </div>
                                     <div class="col-md mb-0">
                                         <label for="holidayNum">假日開放人數</label>
                                         <input name="holidayNum" id="holidayNum" maxlength="3" size="3" type="text"
+                                               th:value="${holidayNum!=null}?${holidayNum}"
                                                class="form-control"
-                                        />
+                                               onkeyup="value=value.replace(/[^\d]/g,'') "/>
                                     </div>
                                     <div class="col-md mb-0">
                                         <label for="specialDat">追加特定場次＆人數</label>
                                         <div class="form-inline">
-                                            <input id='specialDat' name="specialDat" type="text" placeholder="2018-12-30"
+                                            <input id='specialDat' name="specialDat" type="text"
+                                                   placeholder="2018-12-30"
                                                    class="form-control datetimepickerDat"
                                                    onchange="findSessionsBySpecialDatAjax($(this).val())" 　>
                                             <select class="form-control selector" name="sessionsId" id="sessionsId">
@@ -75,7 +138,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-default btn-success" data-dismiss="modal"
-                                        onclick="'javascript:save()'">Save
+                                        onclick="save()">Save
                                 </button>
                                 <button class="btn btn-secondary" onclick="location.reload();" id="reset" name="reset"
                                         type="button">Cancel
@@ -95,19 +158,14 @@
 
 </div>
 <!-- /#wrapper -->
-
 <!-- jQuery -->
 <script src="../static/vendor/jquery/jquery.min.js"></script>
-
 <!-- Bootstrap Core JavaScript -->
 <script src="../static/vendor/bootstrap/js/bootstrap.min.js"></script>
-
 <!-- Metis Menu Plugin JavaScript -->
 <script src="../static/vendor/metisMenu/metisMenu.min.js"></script>
-
 <!-- Custom Theme JavaScript -->
 <script src="../static/dist/js/sb-admin-2.js"></script>
-
 <!-- Page-Level Demo Scripts - Notifications - Use for reference -->
 <script>
     // tooltip demo
@@ -119,6 +177,99 @@
     $("[data-toggle=popover]")
         .popover()
 </script>
+
+<!-- Icons -->
+<script src="../static/js/bootstrap-datetimepicker.min.js"></script>
+<script src="../static/js/bootstrap-datetimepicker.js"></script>
+<script src="../static/js/bootstrap-datetimepicker.zh-TW.js"></script>
+<script>
+
+    function save() {
+        var normaldayNum = $('#normaldayNum').val();
+        var holidayNum = $('#holidayNum').val();
+        var specialDat = $('#specialDat').val();
+        var sessionsId = $('#sessionsId').val();
+        //console.log(sessionsId);
+        var specialDayNum = $('#specialDayNum').val();
+        if (normaldayNum == '') {
+            popToast("請設定平日開放人數 ！");
+            $('#normaldayNum').focus();
+
+            return;
+        } else if (holidayNum == '') {
+            popToast("請設定假日開放人數 ！");
+            $('#holidayNum').focus();
+            return;
+        } else if (specialDat != '' && specialDayNum == '') {
+            popToast("請設定特定日期追加人數或者不指定特定日期");
+            $('#specialDayNum').focus();
+            return;
+        } else if (specialDat == '' && specialDayNum != '') {
+            popToast("請設定特定日期或者不設定特定日期追加人數");
+            $('#specialDat').focus();
+            return;
+        } else {
+            $.ajax({
+                contentType: 'application/json; charset=UTF-8',
+                type: "post",
+                data: JSON.stringify({
+                    'normaldayNum': normaldayNum,
+                    'holidayNum': holidayNum,
+                    'specialDat': specialDat,
+                    'sessionsId': sessionsId,
+                    'specialDayNum': specialDayNum
+                }),
+                async: false,
+                url: "/accommodate/save",
+                success: function (data) {
+                    popToast("存 檔 完 成 ！");
+                    setTimeout("location.reload()", 900);
+                },
+                error: function (jqXHR, exception) {
+                    ajaxError(jqXHR, exception);
+                },
+            });
+        }
+    }
+
+    $(".datetimepickerDat").datetimepicker({
+        startView: 2,
+        minView: 2,
+        autoclose: true,
+        todayBtn: true,
+        todayHighlight: true,
+        format: 'yyyy-mm-dd',
+        language: 'zh-TW'
+    });
+
+    function ajaxError(jqXHR, exception) {
+        var msg = '';
+        if (jqXHR.status === 0) {
+            msg = 'Not connect.\n Verify Network.';
+        } else if (jqXHR.status == 404) {
+            msg = 'Requested page not found. [404]';
+        } else if (jqXHR.status == 500) {
+            msg = 'Internal Server Error [500].';
+        } else if (exception === 'parsererror') {
+            msg = 'Requested JSON parse failed.';
+        } else if (exception === 'timeout') {
+            msg = 'Time out error.';
+        } else if (exception === 'abort') {
+            msg = 'Ajax request aborted.';
+        } else {
+            msg = 'Uncaught Error.\n' + jqXHR.responseText;
+        }
+        console.log(msg);
+    }
+</script>
+
+
+!-- Icons -->
+<script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
+<script>
+    feather.replace()
+</script>
+
 
 </body>
 

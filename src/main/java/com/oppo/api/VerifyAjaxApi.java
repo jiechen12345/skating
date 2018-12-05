@@ -70,17 +70,17 @@ public class VerifyAjaxApi {
             Status status = statusDao.findById(5).get();
             for (int i = 1; i < idArr.length; i++) {
                 PreOrder preOrder = preorderDao.findById(idArr[i]).get();
-                // if ((preOrder.getVerifyTime() == null || "".equals(preOrder.getVerifyTime()) && preOrder.getStatus().getId() < 4)) {
+                 if ((preOrder.getVerifyTime() == null || "".equals(preOrder.getVerifyTime()) && preOrder.getStatus().getId() < 4)) {
                 preOrder.setVerifyTime(DateTime.now().toDate());
                 preOrder.setStatus(status);
                 preorderDao.save(preOrder);
                 String sessionId = preOrder.getSessions().getId().toString();
-//                    for (int j = 1; j <= preOrder.getGroupNum(); j++) {
-//                        saveEnrollment(sessionId, preOrder);
-//                    }
+                    for (int j = 1; j <= preOrder.getGroupNum(); j++) {
+                        saveEnrollment(sessionId, preOrder);
+                    }
                 //寄信
-                sendMail(preOrder);
-                // }
+                sendMail(preOrder,1);
+                 }
             }
         } else if (idArr.length > 0 && "2".equals(idArr[0])) { //不通過
             Status status = statusDao.findById(4).get();
@@ -94,6 +94,7 @@ public class VerifyAjaxApi {
                     sessions.setReserved(sessions.getReserved() - preOrder.getGroupNum());
                     sessionsDao.saveAndFlush(sessions);
                     delDir(new File(uploadingdir, preOrder.getId()));
+                    sendMail(preOrder,2);
                 }
             }
         }
@@ -132,32 +133,13 @@ public class VerifyAjaxApi {
         }
     }
 
-    public void sendMail(PreOrder preOrder) {
-        String to = "tina3717805@gmail.com";
-        mailUtil.sendSimpleMail(to, "主题：测试", "hhhhhhhh");
-
-
-//        mailSender = new JavaMailSenderImpl();
-//        // 设定mail server
-//        mailSender.setHost(host);
-//        mailSender.setPort(-1);
-//        mailSender.setUsername(username);
-//        mailSender.setPassword(password);
-//        mailSender.setDefaultEncoding("UTF-8");
-//        Properties prop = new Properties();
-//        prop.put("mail.smtp.auth", auth);
-//        mailSender.setJavaMailProperties(prop);
-//        subject = "測試使用 SMTP SSL發信"; // 信件標題
-//        content = "<html><head><title>測試</title></head><body>這是一封測試信，收到請自行刪除 </body></html>"; // 內容
-//        String targetMail = "tina3717805@gmail.com";  // 對方郵箱
-//
-//        SimpleMailMessage message = new SimpleMailMessage();
-//        message.setFrom(username);
-//        message.setTo(targetMail);
-//        message.setSubject(subject);
-//        message.setText(content);
-//        mailSender.send(message);
-
+    public void sendMail(PreOrder preOrder,Integer type) {
+        String to = preOrder.getApplicantEmail();
+        if(type==1){
+            mailUtil.sendSimpleMail(to, "審核通過", "恭喜");
+        }else if(type==2){
+            mailUtil.sendSimpleMail(to, "審核失敗", "GG");
+        }
 
     }
 

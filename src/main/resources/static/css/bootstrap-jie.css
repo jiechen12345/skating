@@ -3,15 +3,17 @@
 }
 
 .form-control-jie {
-    width:92%;
-    display:inline;
+    width: 92%;
+    display: inline;
 }
+
 .editor-label {
     margin: 0px 0 0 0;
     display: inline-block;
     min-width: 70px;
 
 }
+
 .pop-toast {
     position: fixed;
     max-width: 20%;
@@ -42,6 +44,14 @@
 }
 
 .button-bar {
-    position:absolute;
-    right:10%;
+    position: absolute;
+    right: 10%;
+}
+
+.thAlignCenter {
+    text-align: center;
+}
+
+tdAlignCenter {
+    vertical-align: center;
 }
