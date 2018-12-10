@@ -72,7 +72,8 @@ dependencies {
     compile group: 'org.xhtmlrenderer', name: 'flying-saucer-pdf-itext5', version: '9.1.6'
     compile group: 'net.sf.jtidy', name: 'jtidy', version: 'r938'
     compile group: 'joda-time', name: 'joda-time', version: '2.9.4'
-    runtime('mysql:mysql-connector-java')
+    //runtime('mysql:mysql-connector-java')
+    runtimeOnly('com.microsoft.sqlserver:mssql-jdbc')
     compile group: 'javax.mail', name: 'mail', version: '1.5.0-b01'
     compile group: 'org.apache.commons', name: 'commons-email', version: '1.5'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '1.2.0.RELEASE'
