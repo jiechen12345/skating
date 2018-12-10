@@ -73,7 +73,7 @@ public class InsertHoliday {
                 //加载驱动程序
                 Class.forName(driver);
                 //连接数据库
-                Connection conn = DriverManager.getConnection(url, user, "reallyStrongPwd123");
+                Connection conn = DriverManager.getConnection(url, user, password);
                 if (!conn.isClosed())
                     System.out.println("[batch]Succeeded connecting to the Database!");
                 //statement用来执行SQL语句
