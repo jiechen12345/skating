@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Created by lime on 2016/7/31.
  */
-
+//reallyStrongPwd123
 public class InsertHoliday {
     public static String START = "20181101";
     public static String END = "20190330";
@@ -59,11 +59,14 @@ public class InsertHoliday {
             System.out.println("STARTDAT：" + START + "\n" + "ENDDAT：" + END + "\n");
             System.out.println("假日人數：" + NUM + "\n" + "平日人數：" + NUM2 + "\n");
             //驱动程序名
-            String driver = "com.mysql.jdbc.Driver";
+            String driver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
             //String driver = "oracle.jdbc.driver.OracleDriver";
             //要插入的数据库
             //String url = "jdbc:oracle:thin:@127.0.0.1:1521:orcl";
-            String url = "jdbc:mysql://127.0.0.1:3306/skating";
+            //String url = "jdbc:mysql://127.0.0.1:3306/skating";
+            //String url = "jdbc:mysql://127.0.0.1:3306/skating";
+            String url = "jdbc:sqlserver://127.0.0.1:1433;databaseName=skating";
+
 //        String user = "root";
 //        String password = "asd";
             try {
@@ -77,14 +80,14 @@ public class InsertHoliday {
                 Statement statement = conn.createStatement();
 
                 //---清空
-                String truncateSql = "TRUNCATE TABLE holiday";
-                statement.execute(truncateSql);
-                truncateSql = "TRUNCATE TABLE ACCOMMODATE";
-                statement.execute(truncateSql);
-                truncateSql = "TRUNCATE TABLE SESSIONS";
-                statement.execute(truncateSql);
-                truncateSql = "TRUNCATE TABLE STATUS";
-                statement.execute(truncateSql);
+//                String truncateSql = "TRUNCATE TABLE holiday";
+//                statement.execute(truncateSql);
+//                truncateSql = "TRUNCATE TABLE  accommodate";
+//                statement.execute(truncateSql);
+//                truncateSql = "TRUNCATE TABLE SESSIONS";
+//                statement.execute(truncateSql);
+//                truncateSql = "TRUNCATE TABLE status";
+//                statement.execute(truncateSql);
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
                 Date start = sdf.parse(START);//开始时间
                 Date end = sdf.parse(END);//结束时间
@@ -95,42 +98,42 @@ public class InsertHoliday {
                 Date lastWorkDate;//上一个工作日
                 //1:送出表單 2:OTP申請 3:OTP通過 4:審核不通過 5:審核通過 6:到場
                 String insertSql = "";
-                String STATUS_NAME = "";
+                String status_name = "";
                 for (int i = 1; i <= 6; i++) {
                     switch (i) {
                         case 1:
-                            STATUS_NAME = "送出表單";
+                            status_name = "送出表單";
                             break;
                         case 2:
-                            STATUS_NAME = "OTP申請";
+                            status_name = "OTP申請";
                             break;
                         case 3:
-                            STATUS_NAME = "OTP通過";
+                            status_name = "OTP通過";
                             break;
                         case 4:
-                            STATUS_NAME = "審核不通過";
+                            status_name = "審核不通過";
                             break;
                         case 5:
-                            STATUS_NAME = "審核通過";
+                            status_name = "審核通過";
                             break;
                         case 6:
-                            STATUS_NAME = "到場";
+                            status_name = "到場";
                             break;
 
                     }
-                    insertSql = "INSERT INTO STATUS (id,STATUS_NAME) " +
-                            "VALUES(" + i + ",'" + STATUS_NAME + "')";
+                    insertSql = "INSERT INTO status (status_name) " +
+                            "VALUES('"+  status_name  +"')";
                     System.out.println(insertSql);
                     statement.execute(insertSql);
                 }
 
                 //-設定容納人數
 
-                insertSql = "INSERT INTO ACCOMMODATE (flag,num) " +
+                insertSql = "INSERT INTO accommodate (flag,num) " +
                         "VALUES('" + FLAG + "'," + NUM + ")";
                 System.out.println(insertSql);
                 statement.execute(insertSql);
-                insertSql = "INSERT INTO ACCOMMODATE (flag,num) " +
+                insertSql = "INSERT INTO accommodate (flag,num) " +
                         "VALUES('" + FLAG2 + "'," + NUM2 + ")";
                 System.out.println(insertSql);
                 statement.execute(insertSql);
@@ -181,7 +184,7 @@ public class InsertHoliday {
                             SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
                             String dateString = sdf2.format(nextWorkDate);
                             System.out.println(dateString);
-                            insertSql = "INSERT INTO HOLIDAY (HOLIDAT, TITLE,ACCOMMODATE_FLAG) " +
+                            insertSql = "INSERT INTO holiday (holidat, title,accommodate_flag) " +
                                     "VALUES('" + dateString + "','" + HolidayTitle + "','" + FLAG + "')";
                             statement.execute(insertSql);
                             for (int i = 0; i <= 3; i++) {
