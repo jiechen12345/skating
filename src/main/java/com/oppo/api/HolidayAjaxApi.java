@@ -2,6 +2,7 @@ package com.oppo.api;
 
 import com.oppo.Entity.Accommodate;
 import com.oppo.Entity.Sessions;
+import com.oppo.annotation.Action;
 import com.oppo.dao.AccommodateDao;
 import com.oppo.dao.HolidayDao;
 import com.oppo.dao.SessionsDao;
@@ -28,7 +29,6 @@ import java.util.*;
 @RestController
 @RequestMapping(value = "/holiday", produces = "application/json")
 public class HolidayAjaxApi {
-    Logger LOGGER = LoggerFactory.getLogger(HolidayAjaxApi.class);
     @Autowired
     private AccommodateDao accommodateDao;
     @Autowired
@@ -39,14 +39,13 @@ public class HolidayAjaxApi {
     @Value("${accommodate.normaldayFlag}")
     private String normaldayFlag;
     @Value("${sessions.Holiday.startTime}")
-    String startTime ;
+    String startTime;
     @Value("${sessions.Holiday.endTime}")
-    String endTime ;
+    String endTime;
 
+    @Action("HolidayAjaxApi[load]")
     @RequestMapping(value = "/load", method = RequestMethod.POST)
     public List<Sessions> load(@RequestBody HolidayReq holidayReq) {
-        //System.out.println(holidayReq.toString());
-        //bookService.create(bookReq);
         List<Sessions> SessionsList = sessionsDao.findAll((root, query, cb) -> {
             //query.groupBy(root.get("dat"));
             query.orderBy(cb.asc(root.get("dat")));
@@ -70,6 +69,7 @@ public class HolidayAjaxApi {
 //        return list;
     }
 
+    @Action("HolidayAjaxApi[add]")
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public Sessions add(@RequestBody Date addDat) {
         Sessions sessions;

@@ -1,6 +1,7 @@
 package com.oppo.api;
 
 import com.oppo.Entity.Accommodate;
+import com.oppo.annotation.Action;
 import com.oppo.dao.AccommodateDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
  */
 @Controller
 public class AccommodateApi {
-    Logger LOGGER = LoggerFactory.getLogger(AccommodateApi.class);
+    //Logger LOGGER = LoggerFactory.getLogger(AccommodateApi.class);
     @Autowired
     private AccommodateDao accommodateDao;
     //平日代號
@@ -27,6 +28,7 @@ public class AccommodateApi {
 
     //帶入目前相關值
     @GetMapping("/accommodate")
+    @Action("AccommodateApi[findAll]")
     public String findAll(Model model) {
         Accommodate normaldayAccommodate = accommodateDao.findById(normaldayFlag).get();
         Accommodate holidayAccommodate = accommodateDao.findById(holidayFlag).get();

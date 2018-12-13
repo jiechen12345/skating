@@ -2,6 +2,7 @@ package com.oppo.api;
 
 import com.oppo.Entity.Accommodate;
 import com.oppo.Entity.Sessions;
+import com.oppo.annotation.Action;
 import com.oppo.common.Common;
 import com.oppo.dao.AccommodateDao;
 import com.oppo.dao.HolidayDao;
@@ -41,9 +42,10 @@ public class AccommodateAjaxApi {
     private String SpecialdayTitle = "特";
 
     //存檔
+    @Action("AccommodateAjaxApi[save]")
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public void save(@RequestBody AccommodateReq accommodateReq) throws IOException {
-        LOGGER.info("**** " + accommodateReq.toString());
+        //LOGGER.info("**** " + accommodateReq.toString());
         Accommodate normaldayAccommodate = accommodateDao.findById(normaldayFlag).get();
         normaldayAccommodate.setNum(Common.get(accommodateReq.getNormaldayNum()));
         accommodateDao.saveAndFlush(normaldayAccommodate);
@@ -57,8 +59,8 @@ public class AccommodateAjaxApi {
         if (!"".equals(spDat) && 0 != spNum && sessionsId != null) {
             if (sessionsId != 0) {
                 Optional<Sessions> optional = sessionsDao.findById(sessionsId);
-                if (optional!=null){
-                    Sessions sessions=optional.get();
+                if (optional != null) {
+                    Sessions sessions = optional.get();
                     sessions.setExtra(spNum);
                     sessionsDao.saveAndFlush(sessions);
                 }
@@ -74,6 +76,7 @@ public class AccommodateAjaxApi {
     }
 
     @RequestMapping(value = "/findSessionsBySpecialDat", method = RequestMethod.POST)
+    @Action("AccommodateAjaxApi[findSessionsBySpecialDat]")
     public List<Sessions> findSessionsBySpecialDat(@RequestBody String dat) {
         List<Sessions> sessionsList = sessionsDao.findAllByDatOrderByStartTime(dat);
         return sessionsList;
