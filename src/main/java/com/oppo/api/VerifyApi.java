@@ -1,5 +1,6 @@
 package com.oppo.api;
 
+import com.oppo.annotation.Action;
 import com.oppo.business.VerfyService;
 import com.oppo.dto.*;
 import com.oppo.request.PreorderReq;
@@ -23,7 +24,6 @@ import java.util.List;
  */
 @Controller
 public class VerifyApi {
-    Logger LOGGER = LoggerFactory.getLogger(VerifyApi.class);
     @Autowired
     private VerfyService verfyService;
     @Value("${upload.uploadingdir}")
@@ -33,13 +33,12 @@ public class VerifyApi {
 //    List<Integer> pageSizeOption=new ArrayList<Integer>()
 
     //查詢分頁會員列表及修改pageSize
+    @Action("VerifyApi[findAll]")
     @GetMapping("/verify")
     public String findAll(@RequestParam(required = false, defaultValue = "1") Integer page,
                           @RequestParam(required = false, defaultValue = "5") Integer pageSize,
                           Model model) {
         preorderReq = new PreorderReq();
-        LOGGER.info("findAll.page= " + page);
-        LOGGER.info("findAll.pageSize= " + pageSize);
         PreorderPage preorderPage = verfyService.getAllForm(page, pageSize);
         List<ProjectDto> projectDtos = null; //for查詢用的ProjectDtoList
         model.addAttribute("preorders", preorderPage.getContents());
@@ -53,6 +52,7 @@ public class VerifyApi {
     }
 
     //查詢分頁會員列表及修改pageSize
+    @Action("VerifyApi[changePageSize]")
     @GetMapping("/verifyChangePage")
     public String changePageSize(@RequestParam(required = false, defaultValue = "1") Integer page,
                                  @RequestParam(required = false, defaultValue = "5") Integer pageSize, Model model) {
@@ -67,6 +67,7 @@ public class VerifyApi {
         return "verify";
     }
 
+    @Action("VerifyApi[openImgContent]")
     @GetMapping("/imgContent/{id}")
     public String openImgContent(@PathVariable String id, Model model) throws Exception {
         List<String> list = new ArrayList<String>();
@@ -91,6 +92,7 @@ public class VerifyApi {
         return "showImg";
     }
 
+    @Action("VerifyApi[showImg]")
     @GetMapping("/showImg/{id}/{picFile}")
     public void showImg(@PathVariable String id, @PathVariable String picFile, HttpServletResponse response) throws Exception {
         File file = new File(uploadingdir, id);

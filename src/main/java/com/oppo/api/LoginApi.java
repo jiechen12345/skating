@@ -1,6 +1,7 @@
 package com.oppo.api;
 
 import com.oppo.Entity.Member;
+import com.oppo.annotation.Action;
 import com.oppo.dao.MemberDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,9 +22,10 @@ import java.util.Map;
 @Controller
 @RequestMapping("/api")
 public class LoginApi {
-    Logger LOGGER = LoggerFactory.getLogger(LoginApi.class);
     @Autowired
     private MemberDao memberDao;
+
+    @Action("LoginApi[login]")
     @PostMapping(value = "/login")
     public String login(@RequestParam("account") String account, @RequestParam("password") String password
             , Map<String, Object> map, HttpSession session,HttpServletRequest request) throws IOException {

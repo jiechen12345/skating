@@ -1,6 +1,7 @@
 package com.oppo.api;
 
 import com.oppo.Entity.Departemt;
+import com.oppo.annotation.Action;
 import com.oppo.business.MemberService;
 import com.oppo.dao.DepartmentDao;
 import com.oppo.dto.MemberDto;
@@ -24,7 +25,6 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 @Controller
 public class MemberApi {
-    Logger LOGGER = LoggerFactory.getLogger(MemberApi.class);
     @Autowired
     private DepartmentDao departmentDao;
     @Autowired
@@ -65,6 +65,7 @@ public class MemberApi {
 //    }
 
     //查詢分頁會員列表及修改pageSize
+    @Action("MemberApi[changePageSize]")
     @GetMapping("/members")
     public String changePageSize(@RequestParam(required = false, defaultValue = "1") Integer page,
                                  @RequestParam(required = false, defaultValue = "5") Integer pageSize, Model model) {
@@ -79,6 +80,7 @@ public class MemberApi {
         return "member/list";
     }
 
+    @Action("MemberApi[toAddModal]")
     @RequestMapping(value = "/toAddMember", method = RequestMethod.GET)
     public String toAddModal(Model model) throws IOException {
         List<Departemt> departments = departmentDao.findAll();
@@ -88,9 +90,9 @@ public class MemberApi {
     }
 
     //新增會員
+    @Action("MemberApi[AddModal]")
     @RequestMapping(value = "/member", method = RequestMethod.POST)
     public String AddModal(@RequestBody MemberReq memberReq, Model model) throws IOException {
-        LOGGER.info("**** " + memberReq.toString());
         memberService.create(memberReq);
         List<MemberDto> memberDtoList = memberService.findAll();
         model.addAttribute("members", memberDtoList);
@@ -98,9 +100,9 @@ public class MemberApi {
         //return "redirect:/members.html";
     }
 
+    @Action("MemberApi[toModifyModal]")
     @RequestMapping(value = "/toModifyMember/{id}", method = RequestMethod.GET)
     public String toModifyModal(@PathVariable Integer id, Model model) throws IOException {
-        LOGGER.info("******** " + id.toString());
         MemberDto memberDto = memberService.findOne(id);
         List<Departemt> departments = departmentDao.findAll();
         model.addAttribute("depts", departments);
@@ -110,9 +112,9 @@ public class MemberApi {
     }
 
     //修改會員
+    @Action("MemberApi[modifyMember]")
     @RequestMapping(value = "/member", method = RequestMethod.PUT)
     public String modifyMember(@RequestBody MemberReq memberReq, Model model) throws IOException {
-        LOGGER.info("***** " + memberReq.toString());
         memberService.update(memberReq);
         List<MemberDto> memberDtoList = memberService.findAll();
         model.addAttribute("members", memberDtoList);
@@ -120,6 +122,7 @@ public class MemberApi {
         //return "redirect:/members.html";
     }
 
+    @Action("MemberApi[deleteMember]")
     @RequestMapping(value = "/member/{id}", method = RequestMethod.DELETE)
     public String deleteMember(@PathVariable Integer id) {
         memberService.delete(id);

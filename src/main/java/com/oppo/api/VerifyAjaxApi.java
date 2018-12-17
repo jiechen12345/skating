@@ -7,6 +7,7 @@ import com.oppo.Entity.Enrollment;
 import com.oppo.Entity.PreOrder;
 import com.oppo.Entity.Sessions;
 import com.oppo.Entity.Status;
+import com.oppo.annotation.Action;
 import com.oppo.common.MailUtil;
 import com.oppo.dao.EnrollmentDao;
 import com.oppo.dao.PreorderDao;
@@ -62,6 +63,7 @@ public class VerifyAjaxApi {
     @Autowired
     MailUtil mailUtil;
 
+    @Action("VerifyAjaxApi[verifyExecute]")
     @RequestMapping(value = "/execute", method = RequestMethod.PUT)
     public void verifyExecute(@RequestBody String ids) {
         //System.out.println(ids);
@@ -101,6 +103,7 @@ public class VerifyAjaxApi {
 
     }
 
+    @Action("VerifyAjaxApi[delDir]")
     public void delDir(File path) {
         if (!path.exists()) {
             return;
@@ -117,11 +120,12 @@ public class VerifyAjaxApi {
     }
 
     //註冊已成功預約的號碼牌排序
+    @Action("VerifyAjaxApi[saveEnrollment]")
     public void saveEnrollment(String sessionId, PreOrder preOrder) {
         try {
             Enrollment enrollment = enrollmentDao.findFirstByIdStartingWithOrderByIdDesc(sessionId);
             if (enrollment != null && enrollment.getId().length() == 6) {
-                LOGGER.info(enrollment.getId());
+//                LOGGER.info(enrollment.getId());
                 Long maxId = Long.parseLong(enrollment.getId());
                 maxId = maxId + 1;
                 enrollmentDao.saveAndFlush(new Enrollment(maxId.toString(), preOrder, false, false));
@@ -133,6 +137,7 @@ public class VerifyAjaxApi {
         }
     }
 
+    @Action("VerifyAjaxApi[sendMail]")
     public void sendMail(PreOrder preOrder,Integer type) {
         String to = preOrder.getApplicantEmail();
         if(type==1){

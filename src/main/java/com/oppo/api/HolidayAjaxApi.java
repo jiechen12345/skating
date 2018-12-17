@@ -89,6 +89,7 @@ public class HolidayAjaxApi {
 
     }
 
+    @Action("HolidayAjaxApi[remove]")
     @RequestMapping(value = "/remove", method = RequestMethod.DELETE)
     public Boolean remove(@RequestBody Date removeDat) {
         Boolean flag = false;
