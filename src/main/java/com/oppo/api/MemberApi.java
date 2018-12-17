@@ -44,7 +44,7 @@ public class MemberApi {
             model.addAttribute("totalPages", memberPage.getTotalPages());
             model.addAttribute("count", memberPage.getCount());
             model.addAttribute("pageSize", pageSize);
-            return "member/list";
+            return "member";
 
         }
     */
@@ -60,7 +60,7 @@ public class MemberApi {
 //        model.addAttribute("pageSize", pageSize);
 //        model.addAttribute("count", memberPage.getCount());
 //        model.addAttribute("pageSizeOption", pageSizeOption);
-//        return "member/list";
+//        return "member";
 //
 //    }
 
@@ -77,7 +77,7 @@ public class MemberApi {
         model.addAttribute("pageSize", pageSize);
         model.addAttribute("count", memberPage.getCount());
         model.addAttribute("pageSizeOption", pageSizeOption);
-        return "member/list";
+        return "member";
     }
 
     @Action("MemberApi[toAddModal]")
@@ -85,7 +85,7 @@ public class MemberApi {
     public String toAddModal(Model model) throws IOException {
         List<Departemt> departments = departmentDao.findAll();
         model.addAttribute("depts", departments);
-        return "member/list::addModalContens";
+        return "member::addModalContens";
 
     }
 
@@ -96,7 +96,7 @@ public class MemberApi {
         memberService.create(memberReq);
         List<MemberDto> memberDtoList = memberService.findAll();
         model.addAttribute("members", memberDtoList);
-        return "member/list";
+        return "member";
         //return "redirect:/members.html";
     }
 
@@ -107,7 +107,7 @@ public class MemberApi {
         List<Departemt> departments = departmentDao.findAll();
         model.addAttribute("depts", departments);
         model.addAttribute("memberDto", memberDto);
-        return "member/list::modifyModalContens";
+        return "member::modifyModalContens";
 
     }
 
@@ -118,7 +118,7 @@ public class MemberApi {
         memberService.update(memberReq);
         List<MemberDto> memberDtoList = memberService.findAll();
         model.addAttribute("members", memberDtoList);
-        return "member/list";
+        return "member";
         //return "redirect:/members.html";
     }
 
@@ -126,7 +126,7 @@ public class MemberApi {
     @RequestMapping(value = "/member/{id}", method = RequestMethod.DELETE)
     public String deleteMember(@PathVariable Integer id) {
         memberService.delete(id);
-        //return "member/list";
+        //return "member";
         return "redirect:/members.html";
     }
 }
