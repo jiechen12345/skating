@@ -30,6 +30,7 @@
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <script src="../static/js/formatStrap.js"></script>
 
 
     <!-- Moment.js v2.20.0 -->
@@ -77,8 +78,9 @@
                                                 <label for="newName">請輸入姓名:</label>
                                                 <input id='newName' name="newName" type="text"
                                                        placeholder="請輸入姓名:"
-                                                       onkeyup="isName();"
+                                                       onkeyup="isName(this.id);"
                                                        required>
+
                                                 <img src="/img/cross_icon.png" style="display: none" id="nameCross"
                                                      width="20" height="20">
                                                 <img src="/img/icon-check.png" style="display: none" id="nameCheck"
@@ -88,7 +90,7 @@
                                                 <label for="newAccount">請輸入帳號:</label>
                                                 <input id='newAccount' name="newAccount" type="text"
                                                        placeholder="請輸入帳號:"
-                                                       onkeyup="isAccount();checkAccount();"
+                                                       onkeyup="isAccount(this.id);;"
                                                        required>
                                                 <img src="/img/cross_icon.png" style="display: none" id="accountCross"
                                                      width="20" height="20">
@@ -99,7 +101,7 @@
                                                 <label for="newPassword">請輸入密碼:</label>
                                                 <input id='newPassword' name="newPassword" type="text"
                                                        placeholder="請輸入密碼:"
-                                                       onkeyup="isPassword();"
+                                                       onkeyup="isPassword(this.id);"
                                                        required>
                                                 <img src="/img/cross_icon.png" style="display: none" id="passCross"
                                                      width="20" height="20">
@@ -110,7 +112,7 @@
                                                 <label for="cfmPassword">請再次輸入密碼:</label>
                                                 <input id='cfmPassword' name="cfmPassword" type="text"
                                                        placeholder="請再次輸入密碼:"
-                                                       onkeyup="checkPassword();"
+                                                       onkeyup="checkPassword(this.id);"
                                                        required>
                                                 <img src="/img/cross_icon.png" style="display: none" id="pass2Cross"
                                                      width="20" height="20">
@@ -121,7 +123,10 @@
                                                 <div>
                                                     <label for="depName">請選擇部門</label>
                                                     <select class="form-control selector" name="depName" id="depName">
-
+                                                        <option></option>
+                                                        <option>小吃部</option>
+                                                        <option>飲料部</option>
+                                                        <option>熱食部</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -330,97 +335,8 @@
     feather.replace()
 </script>
 
-<script>
-    function confirmPass() {
-        $('#myModal').modal('hide');
-
-        setTimeout("window.location.href='/members'", 1000);
-    }
-</script>
-
-<!--functions in popout  -->
-<script>
-    function isName() {
-        var name_element = document.getElementById("newName");
-        var name = name_element.value;
-        document.getElementById("nameCheck").style.display = "none";
-        if (name != "aaa01") {
-            document.getElementById("nameCross").style = "";
-        } else {
-            document.getElementById("nameCross").style.display = "none";
-            document.getElementById("nameCheck").style = "";
-        }
-    }
-
-    function isAccount() {
-        var account_element = document.getElementById("newAccount");
-        var account = account_element.value;
-        //should be correct formation
-        document.getElementById("accountCheck").style.display = "none";
-        if (account != "aaa01") {
-            document.getElementById("accountCross").style = "";
-        } else {
-            document.getElementById("accountCross").style.display = "none";
-            document.getElementById("accountCheck").style = "";
-        }
-    }
-
-    function checkAccount() {
-        //check no overlapping account
-    }
-
-    function isPassword() {
-        var password_element = document.getElementById("newPassword");
-        var password = password_element.value;
-        //should be correct formation and length
-        document.getElementById("passCheck").style.display = "none";
-        if (password != "123") {
-            document.getElementById("passCross").style = "";
-        } else {
-            document.getElementById("passCross").style.display = "none";
-            document.getElementById("passCheck").style = "";
-        }
-    }
-
-    function checkPassword() {
-        var password1_element = document.getElementById("newPassword");
-        var password1 = password1_element.value;
-        var password2_element = document.getElementById("cfmPassword");
-        var password2 = password2_element.value;
-
-        document.getElementById("pass2Check").style.display = "none";
-        if (password1 != password2) {
-            document.getElementById("pass2Cross").style = "";
-        } else {
-            document.getElementById("pass2Cross").style.display = "none";
-            document.getElementById("pass2Check").style = "";
-        }
-    }
-
-</script>
 
 
-<script>
-
-    // Example starter JavaScript for disabling form submissions if there are invalid fields
-    (function () {
-        'use strict';
-        window.addEventListener('load', function () {
-            // Fetch all the forms we want to apply custom Bootstrap validation styles to
-            var forms = document.getElementsByClassName('needs-validation');
-            // Loop over them and prevent submission
-            var validation = Array.prototype.filter.call(forms, function (form) {
-                form.addEventListener('submit', function (event) {
-                    if (form.checkValidity() === false) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                    form.classList.add('was-validated');
-                }, false);
-            });
-        }, false);
-    })();
-</script>
 
 <!--<script>-->
 <!--function loadMemberData() {-->
