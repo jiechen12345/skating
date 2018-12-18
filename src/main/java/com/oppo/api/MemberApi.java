@@ -70,7 +70,7 @@ public class MemberApi {
     public String changePageSize(@RequestParam(required = false, defaultValue = "1") Integer page,
                                  @RequestParam(required = false, defaultValue = "5") Integer pageSize, Model model) {
         MemberPage memberPage = memberService.getAllForm(page, pageSize);
-        //List<MemberDto> memberDtoList = memberService.findAll();
+        List<MemberDto> memberDtoList = memberService.findAll();
         model.addAttribute("members", memberPage.getContents());
         model.addAttribute("indexPage", memberPage.getCurrentPage());
         model.addAttribute("totalPages", memberPage.getTotalPages());
