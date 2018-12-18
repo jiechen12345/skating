@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link rel="stylesheet" href="../static/css/bootstrap-datetimepicker.min.css" media="screen"/>
+    <link rel="stylesheet" href="../static/css/bootstrap-datetimepicker.css" media="screen"/>
+
+    <title>開放人數管理</title>
+
+    <link href="../static/css/bootstrap-jie.css" rel="stylesheet"/>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="../static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- MetisMenu CSS -->
+    <link href="../static/vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="../static/dist/css/sb-admin-2.css" rel="stylesheet">
+    <!-- Custom Fonts -->
+    <link href="../static/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <!-- Custom Fonts -->
+    <link href="../static/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <script>
+
+        /**
+         * toast 小提示框
+         * @param tipTxt 提示内容
+         */
+        function popToast(tipTxt) {
+            var $popToast = $(".pop-toast");
+            $popToast.remove();
+            var popToastHtml = '<div class="pop-toast">\n' +
+                '            <p class="toast-tip">' + tipTxt + '</p>\n' +
+                '        </div>';
+            $popToast = $(popToastHtml);
+            $("body").append($popToast);
+            setTimeout(function () {
+                $popToast.fadeOut();
+            }, 1000);
+        }
+
+        function findSessionsBySpecialDatAjax(specialDat) {
+            //alert(specialDat);
+            if (specialDat != null && specialDat != "") {
+                $.ajax({
+                    contentType: 'application/json; charset=UTF-8',
+                    type: "post",
+                    data: (specialDat),
+                    url: "/accommodate/findSessionsBySpecialDat",
+                    success: function (data) {
+                        var str = "";
+                        console.log(data);
+                        str += "<option value='0'>" + "</option>";
+                        $.each(data, function (index, value) {
+                            str += "<option value='" + value.id + "'>" + value.startTime + '-' + value.endTime + "</option>";
+                        });
+                        $("#sessionsId").empty();
+                        $("#sessionsId").append(" ");
+                        $("#sessionsId").append(str);
+                    },
+                    error: function (jqXHR, exception) {
+                        ajaxError(jqXHR, exception);
+                        $("#sessionsId").empty();
+                    },
+                });
+            } else {
+
+                $("#sessionsId").empty();
+            }
+        }
+    </script>
+    <style>
+        .pop-toast {
+            max-width: 35%;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<div id="wrapper">
+
+    <div th:replace="common/bar2"></div>
+    <!------->
+    <div id="page-wrapper">
+        <h1>status: [[${status}]]</h1>
+        <h1>error: [[${error}]]</h1>
+        <h1>message: [[${message}]]</h1>
+        <h1>timestamp: [[${timestamp}]]</h1>
+        <h1>exception: [[${exception}]]</h1>
+        <h1>JSR303: [[${errors}]]</h1>
+    </div>
+
+
+    <!-- /#page-wrapper -->
+
+</div>
+<!-- /#wrapper -->
+<!-- jQuery -->
+<script src="../static/vendor/jquery/jquery.min.js"></script>
+<!-- Bootstrap Core JavaScript -->
+<script src="../static/vendor/bootstrap/js/bootstrap.min.js"></script>
+<!-- Metis Menu Plugin JavaScript -->
+<script src="../static/vendor/metisMenu/metisMenu.min.js"></script>
+<!-- Custom Theme JavaScript -->
+<script src="../static/dist/js/sb-admin-2.js"></script>
+<!-- Page-Level Demo Scripts - Notifications - Use for reference -->
+
+
+<!-- Icons -->
+<script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
+<script>
+    feather.replace()
+</script>
+
+
+</body>
+
+</html>
