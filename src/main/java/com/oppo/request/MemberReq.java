@@ -7,9 +7,27 @@ public class MemberReq {
     private String id;
     private String account;
     private String password;
-
     private String name;
     private String depId;
+
+    public MemberReq() {
+    }
+
+    public MemberReq(String id, String account, String password, String name, String depId) {
+        this.id = id;
+        this.account = account;
+        this.password = password;
+        this.name = name;
+        this.depId = depId;
+    }
+
+    public MemberReq(String account, String password, String name, String depId) {
+        this.account = account;
+        this.password = password;
+        this.name = name;
+        this.depId = depId;
+    }
+
 
     public String getId() {
         return id;

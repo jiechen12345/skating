@@ -11,4 +11,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MemberDao extends JpaRepository<Member, Integer>, JpaSpecificationExecutor<Member> {
     Member findByAccount(String account);
+    Integer countAllByAccount(String account);
 }

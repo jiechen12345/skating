@@ -1,9 +1,11 @@
 package com.oppo.api;
 
 import com.oppo.Entity.Departemt;
+import com.oppo.Entity.Member;
 import com.oppo.annotation.Action;
 import com.oppo.business.MemberService;
 import com.oppo.dao.DepartmentDao;
+import com.oppo.dao.MemberDao;
 import com.oppo.dto.MemberDto;
 import com.oppo.dto.MemberPage;
 import com.oppo.request.MemberReq;
@@ -30,6 +32,8 @@ public class MemberApi {
     @Autowired
     private MemberService memberService;
     Integer[] pageSizeOption = {5, 10, 15, 20};
+    @Autowired
+    private MemberDao memberDao;
 
 //    List<Integer> pageSizeOption=new ArrayList<Integer>()
 
@@ -122,6 +126,7 @@ public class MemberApi {
         //return "redirect:/members.html";
     }
 
+
     @Action("MemberApi[deleteMember]")
     @RequestMapping(value = "/member/{id}", method = RequestMethod.DELETE)
     public String deleteMember(@PathVariable Integer id) {
@@ -129,4 +134,46 @@ public class MemberApi {
         //return "member";
         return "redirect:/members.html";
     }
+
+    @Action("MemberApi[addOrder]")
+    @RequestMapping(value = "/addOrder", method = RequestMethod.POST)
+    public String addOrder(@RequestParam String account, @RequestParam String password, @RequestParam String name, @RequestParam String depId, Model model) throws IOException {
+        MemberReq memberReq = new MemberReq(account, password, name, depId);
+        try {
+            System.out.println("***");
+            if (checkAccount(account)) {
+                Member member = new Member();
+                member.setAccount(account);
+                member.setPassword(password);
+                member.setName(name);
+//                member.setDepartemt(depId);
+                try {
+                    memberDao.save(member);
+                } catch (Exception e) {
+//                    LOGGER.error(e.toString());
+                    memberDao.delete(member);
+                    model.addAttribute("errMsg", "系統發生異常請再嘗試，或者洽系統相關人員!");
+                }
+            } else {
+                model.addAttribute("errMsg", "同場次此手機號碼已註冊過");
+                return "member";
+            }
+        } catch (Exception e) {
+//        LOGGER.error(e.toString());
+            return "redirect:/";
+        }
+        return "member";
+        //return "redirect:/members.html";
+    }
+
+    public Boolean checkAccount(String account) {
+        Boolean flag = false;
+        Integer num = memberDao.countAllByAccount(account);
+        if (num == 0) {
+            flag = true;
+        }
+        return flag;
+    }
+
 }
+
