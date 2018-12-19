@@ -80,11 +80,19 @@ public class InsertHoliday {
                 Statement statement = conn.createStatement();
 
                 //---清空
-//                String truncateSql = "TRUNCATE TABLE holiday";
+
+//                String truncateSql = "TRUNCATE TABLE enrollment";
 //                statement.execute(truncateSql);
-//                truncateSql = "TRUNCATE TABLE  accommodate";
+//
+//                truncateSql = "TRUNCATE TABLE enrollment_at_race";
+//                statement.execute(truncateSql);
+//                truncateSql = "TRUNCATE TABLE holiday";
+//                statement.execute(truncateSql);
+//                truncateSql = "TRUNCATE TABLE pre_order";
 //                statement.execute(truncateSql);
 //                truncateSql = "TRUNCATE TABLE SESSIONS";
+//                statement.execute(truncateSql);
+//                truncateSql = "TRUNCATE TABLE  accommodate";
 //                statement.execute(truncateSql);
 //                truncateSql = "TRUNCATE TABLE status";
 //                statement.execute(truncateSql);
@@ -122,7 +130,7 @@ public class InsertHoliday {
 
                     }
                     insertSql = "INSERT INTO status (status_name) " +
-                            "VALUES('"+  status_name  +"')";
+                            "VALUES('" + status_name + "')";
                     System.out.println(insertSql);
                     statement.execute(insertSql);
                 }
