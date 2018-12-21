@@ -136,34 +136,35 @@ public class MemberApi {
     }
 
     @Action("MemberApi[addOrder]")
+//    @GetMapping("/addOrder")
     @RequestMapping(value = "/addOrder", method = RequestMethod.POST)
-    public String addOrder(@RequestParam String account, @RequestParam String password, @RequestParam String name, @RequestParam String depId, Model model) throws IOException {
-        MemberReq memberReq = new MemberReq(account, password, name, depId);
-        try {
-            System.out.println("***");
-            if (checkAccount(account)) {
-                Member member = new Member();
-                member.setAccount(account);
-                member.setPassword(password);
-                member.setName(name);
-//                member.setDepartemt(depId);
-                try {
-                    memberDao.save(member);
-                } catch (Exception e) {
+    public String addOrder(@RequestParam(required = false, defaultValue = "1") String newName, @RequestParam(required = false, defaultValue = "1") String newAccount,
+                           @RequestParam(required = false, defaultValue = "1") String cPassword, @RequestParam(required = false, defaultValue = "1") String depName,
+                           Model model) throws IOException {
+        MemberReq memberReq = new MemberReq(newName, newAccount, cPassword, depName);
+        System.out.println("***");
+
+        if (checkAccount(newAccount)) {
+            Member member = new Member();
+            member.setAccount(newAccount);
+            member.setPassword(cPassword);
+            member.setName(newName);
+//            Departemt departemt = new Departemt();
+//            departemt.setDepName(depName);
+//            departmentDao.save(departemt);
+//            member.setDepartemt();
+            try {
+                memberDao.save(member);
+            } catch (Exception e) {
 //                    LOGGER.error(e.toString());
-                    memberDao.delete(member);
-                    model.addAttribute("errMsg", "系統發生異常請再嘗試，或者洽系統相關人員!");
-                }
-            } else {
-                model.addAttribute("errMsg", "同場次此手機號碼已註冊過");
-                return "member";
+                memberDao.delete(member);
+                model.addAttribute("errMsg", "系統發生異常請再嘗試，或者洽系統相關人員!");
             }
-        } catch (Exception e) {
-//        LOGGER.error(e.toString());
-            return "redirect:/";
+        } else {
+            model.addAttribute("errMsg", "同場次此手機號碼已註冊過");
+            return "redirect:/members";
         }
-        return "member";
-        //return "redirect:/members.html";
+        return "redirect:/members";
     }
 
     public Boolean checkAccount(String account) {

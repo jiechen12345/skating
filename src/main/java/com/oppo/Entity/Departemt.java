@@ -1,4 +1,5 @@
 package com.oppo.Entity;
+
 import javax.persistence.*;
 
 import javax.persistence.OneToMany;
@@ -14,6 +15,18 @@ public class Departemt {
     private Integer id;
 
     private String depName;
+
+    public Departemt() {
+    }
+
+    public Departemt(Integer id) {
+        this.id = id;
+    }
+
+    public Departemt(Integer id, String depName) {
+        this.id = id;
+        this.depName = depName;
+    }
 
     @OneToMany(targetEntity = Member.class, mappedBy = "departemt")
     private List<Member> members = new LinkedList<>();
