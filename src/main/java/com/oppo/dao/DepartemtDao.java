@@ -11,6 +11,6 @@ import java.util.Optional;
  * Created by JieChen on 2018/7/24.
  */
 @Repository
-public interface DepartmentDao extends JpaRepository<Departemt,Integer> {
+public interface DepartemtDao extends JpaRepository<Departemt,Integer> {
     Optional<Departemt> findById(Integer id);
 }

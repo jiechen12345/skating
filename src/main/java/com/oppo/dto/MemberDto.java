@@ -8,7 +8,7 @@ public class MemberDto {
     private String account;
     private String password;
     private String name;
-    private Integer depId;
+    private String depId;
     private String depName;
 
     public MemberDto() {
@@ -22,11 +22,11 @@ public class MemberDto {
         this.depName = depName;
     }
 
-    public Integer getDepId() {
+    public String getDepId() {
         return depId;
     }
 
-    public void setDepId(Integer depId) {
+    public void setDepId(String depId) {
         this.depId = depId;
     }
 

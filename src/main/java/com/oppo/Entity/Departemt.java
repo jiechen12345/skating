@@ -47,20 +47,12 @@ public class Departemt {
         this.depName = depName;
     }
 
-    public List<Member> getTeams() {
-        return members;
-    }
-
-    public void setTeams(List<Member> teams) {
-        this.members = teams;
-    }
 
     @Override
     public String toString() {
         return "Departemt{" +
                 "id=" + id +
                 ", depName='" + depName + '\'' +
-                ", members=" + members +
                 '}';
     }
 }

@@ -4,21 +4,19 @@ import com.oppo.Entity.Departemt;
 import com.oppo.Entity.Member;
 import com.oppo.annotation.Action;
 import com.oppo.business.MemberService;
-import com.oppo.dao.DepartmentDao;
+import com.oppo.dao.DepartemtDao;
 import com.oppo.dao.MemberDao;
 import com.oppo.dto.MemberDto;
 import com.oppo.dto.MemberPage;
 import com.oppo.request.MemberReq;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -28,7 +26,7 @@ import java.util.List;
 @Controller
 public class MemberApi {
     @Autowired
-    private DepartmentDao departmentDao;
+    private DepartemtDao departemtDao;
     @Autowired
     private MemberService memberService;
     Integer[] pageSizeOption = {5, 10, 15, 20};
@@ -87,7 +85,7 @@ public class MemberApi {
     @Action("MemberApi[toAddModal]")
     @RequestMapping(value = "/toAddMember", method = RequestMethod.GET)
     public String toAddModal(Model model) throws IOException {
-        List<Departemt> departments = departmentDao.findAll();
+        List<Departemt> departments = departemtDao.findAll();
         model.addAttribute("depts", departments);
         return "member::addModalContens";
 
@@ -108,7 +106,7 @@ public class MemberApi {
     @RequestMapping(value = "/toModifyMember/{id}", method = RequestMethod.GET)
     public String toModifyModal(@PathVariable Integer id, Model model) throws IOException {
         MemberDto memberDto = memberService.findOne(id);
-        List<Departemt> departments = departmentDao.findAll();
+        List<Departemt> departments = departemtDao.findAll();
         model.addAttribute("depts", departments);
         model.addAttribute("memberDto", memberDto);
         return "member::modifyModalContens";
@@ -139,9 +137,9 @@ public class MemberApi {
 //    @GetMapping("/addOrder")
     @RequestMapping(value = "/addOrder", method = RequestMethod.POST)
     public String addOrder(@RequestParam(required = false, defaultValue = "1") String newName, @RequestParam(required = false, defaultValue = "1") String newAccount,
-                           @RequestParam(required = false, defaultValue = "1") String cPassword, @RequestParam(required = false, defaultValue = "1") String depName,
+                           @RequestParam(required = false, defaultValue = "1") String cPassword, @RequestParam(required = false, defaultValue = "1") String depId,
                            Model model) throws IOException {
-        MemberReq memberReq = new MemberReq(newName, newAccount, cPassword, depName);
+        MemberReq memberReq = new MemberReq(newName, newAccount, cPassword, depId);
         System.out.println("***");
 
         if (checkAccount(newAccount)) {
@@ -149,10 +147,8 @@ public class MemberApi {
             member.setAccount(newAccount);
             member.setPassword(cPassword);
             member.setName(newName);
-//            Departemt departemt = new Departemt();
-//            departemt.setDepName(depName);
-//            departmentDao.save(departemt);
-//            member.setDepartemt();
+            Departemt departemt = departemtDao.findById(Integer.parseInt(depId)).get();
+            member.setDepartemt(departemt);
             try {
                 memberDao.save(member);
             } catch (Exception e) {
@@ -175,6 +171,5 @@ public class MemberApi {
         }
         return flag;
     }
-
 }
 

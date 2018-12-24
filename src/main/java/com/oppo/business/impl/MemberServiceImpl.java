@@ -3,7 +3,7 @@ package com.oppo.business.impl;
 import com.oppo.Entity.Departemt;
 import com.oppo.Entity.Member;
 import com.oppo.business.MemberService;
-import com.oppo.dao.DepartmentDao;
+import com.oppo.dao.DepartemtDao;
 import com.oppo.dao.MemberDao;
 import com.oppo.dto.MemberDto;
 import com.oppo.dto.MemberPage;
@@ -26,7 +26,7 @@ public class MemberServiceImpl implements MemberService {
     @Autowired
     private MemberDao memberDao;
     @Autowired
-    private DepartmentDao departmentDao;
+    private DepartemtDao departemtDao;
 
     @Override
     public List<MemberDto> findAll() {
@@ -69,7 +69,7 @@ public class MemberServiceImpl implements MemberService {
         member.setAccount(memberReq.getAccount());
         member.setName(memberReq.getName());
         member.setPassword(memberReq.getPassword());
-        Departemt departemt = departmentDao.findById(Integer.parseInt(memberReq.getDepId())).get();
+        Departemt departemt = departemtDao.findById(Integer.parseInt(memberReq.getId())).get();
         member.setDepartemt(departemt);
         memberDao.save(member);
 
@@ -88,7 +88,7 @@ public class MemberServiceImpl implements MemberService {
         member.setName(memberReq.getName());
         member.setAccount(memberReq.getAccount());
         member.setPassword(memberReq.getPassword());
-        Departemt departemt = departmentDao.findById(Integer.parseInt(memberReq.getDepId())).get();
+        Departemt departemt = departemtDao.findById(Integer.parseInt(memberReq.getDepId())).get();
         member.setDepartemt(departemt);
         memberDao.save(member);
     }
@@ -106,7 +106,7 @@ public class MemberServiceImpl implements MemberService {
         memberDto.setPassword(member.getPassword());
         memberDto.setName(member.getName());
         if (member.getDepartemt() != null) {
-            memberDto.setDepId(member.getDepartemt().getId());
+            memberDto.setDepId(Integer.toString(member.getDepartemt().getId()));
             memberDto.setDepName(member.getDepartemt().getDepName());
         } else {
             memberDto.setDepName("");

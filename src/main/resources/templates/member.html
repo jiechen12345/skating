@@ -46,6 +46,50 @@
         }
     </style>
 
+    <script>
+        function ajaxError(jqXHR, exception) {
+            var msg = '';
+            if (jqXHR.status === 0) {
+                msg = 'Not connect.\n Verify Network.';
+            } else if (jqXHR.status == 404) {
+                msg = 'Requested page not found. [404]';
+            } else if (jqXHR.status == 500) {
+                msg = 'Internal Server Error [500].';
+            } else if (exception === 'parsererror') {
+                msg = 'Requested JSON parse failed.';
+            } else if (exception === 'timeout') {
+                msg = 'Time out error.';
+            } else if (exception === 'abort') {
+                msg = 'Ajax request aborted.';
+            } else {
+                msg = 'Uncaught Error.\n' + jqXHR.responseText;
+            }
+            console.log(msg);
+        }
+
+        function getDepartemtAjax() {
+            $.ajax({
+                contentType: 'application/json; charset=UTF-8',
+                type: "post",
+                url: "member/getDepartemtAjax",
+                sync: true,
+                success: function (data) {
+                    var str = "";
+                    $.each(data, function (index, value) {
+                        str += "<option value='" + value.id + "'>" + value.depName + "</option>";
+                    });
+                    $("#depId").empty();
+                    $("#depId").append(str);
+                },
+                error: function (jqXHR, exception) {
+                    ajaxError(jqXHR, exception);
+                },
+            });
+        }
+
+    </script>
+
+
 </head>
 
 <body th:inline="text">
@@ -60,7 +104,8 @@
             <form style="padding-left: 1%">
                 <div class="form-row align-items-center" style="display:inline-flex">
                     <div class="col-auto">
-                        <button type="button" class="btn btn-success btn-md" data-toggle="modal" data-target="#myModal">
+                        <button type="button" class="btn btn-success btn-md" data-toggle="modal"
+                                data-target="#myModal" onclick="getDepartemtAjax()">
                             新增會員
                         </button>
                     </div>
@@ -101,11 +146,10 @@
                             刪除
                             </div> -->
                         </td>
-
                         <td th:text="${member.account}" style="vertical-align: center;">1</td>
                         <td th:text="${member.name}" style="vertical-align: center;">1</td>
                         <td align="center" th:text="${member.password}" style="vertical-align: center;">1</td>
-                        <td th:text="${member.depName}" style="vertical-align: center;">1</td>
+                        <td th:text="${member.getDepName()}" style="vertical-align: center;">1</td>
                     </tr>
 
                     </tbody>
@@ -164,12 +208,8 @@
                     </div>
                     <div class="form-row">
                         <div>
-                            <label for="depName">請選擇部門</label>
-                            <select class="form-control selector" name="depName" id="depName">
-                                <option></option>
-                                <option>小吃部</option>
-                                <option>飲料部</option>
-                                <option>熱食部</option>
+                            <label for="depId">請選擇部門</label>
+                            <select class="form-control selector" name="depId" id="depId">
                             </select>
                         </div>
                     </div>
@@ -313,6 +353,8 @@
 <script>
     feather.replace()
 </script>
+
+
 
 </body>
 </html>
