@@ -87,6 +87,31 @@
             });
         }
 
+        function chAccount(account) {
+            $.ajax({
+                contentType: 'application/json; charset=UTF-8',
+                type: "post",
+                url: "member/getAccountAjax",
+                data: account,
+                sync: true,
+                success: function (data) {
+                    console.log("AAAAA");
+                    $.each(data, function (index, value) {
+                        if (value.account == account) {
+                            var toclear = document.getElementById("newAccount");
+                            toclear.value = "";
+                            toclear.placeholder = "Account exists!";
+                            alertWarning("帳號已存在");
+                            showCross("newAccount");
+                        }
+                    });
+                },
+                error: function (jqXHR, exception) {
+                    ajaxError(jqXHR, exception);
+                },
+            });
+        }
+
     </script>
 
 
@@ -126,7 +151,7 @@
                         <th class="text-center">帳號</th>
                         <th class="text-center">名字</th>
                         <th class="text-center">密碼</th>
-                        <th class="text-center" colspan="3">部門</th>
+                        <th class="text-center">部門</th>
                     </tr>
                     </thead>
 
@@ -149,7 +174,7 @@
                         <td th:text="${member.account}" style="vertical-align: center;">1</td>
                         <td th:text="${member.name}" style="vertical-align: center;">1</td>
                         <td align="center" th:text="${member.password}" style="vertical-align: center;">1</td>
-                        <td th:text="${member.getDepName()}" style="vertical-align: center;">1</td>
+                        <td th:text="${member.depName}" style="vertical-align: center;">1</td>
                     </tr>
 
                     </tbody>
@@ -162,6 +187,7 @@
     </div>
 </div>
 
+<h4>[[${errMsg}]]</h4>
 <!-- Modal -->
 <div class="modal fade" id="myModal" role="dialog">
     <div class="modal-dialog modal-dialog-centered">
@@ -169,7 +195,6 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title">Regist for an account</h4>
-                <h4>[[${errMsg}]]</h4>
             </div>
             <form id='myForm' method="POST" class="needs-validation" novalidate th:action="@{/addOrder}">
                 <div class="modal-body">
@@ -186,7 +211,7 @@
                         <label for="newAccount">請輸入帳號:</label>
                         <input id='newAccount' name="newAccount" type="text"
                                placeholder="英文開頭的6~12位英數" passCode="0"
-                               onkeyup="isAccount(this.id)"
+                               onkeyup="isAccount(this.id)" onchange="chAccount(this.value)"
                                required>
                         <img id="newAccountPic">
                     </div>
@@ -353,7 +378,6 @@
 <script>
     feather.replace()
 </script>
-
 
 
 </body>

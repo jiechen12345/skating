@@ -43,6 +43,7 @@ function isAccount(id) {
     }
 }
 
+
 function isPassword(id) {
     var password_element = document.getElementById("newPassword");
     var password = password_element.value;

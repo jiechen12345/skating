@@ -73,7 +73,8 @@ public class MemberApi {
                                  @RequestParam(required = false, defaultValue = "5") Integer pageSize, Model model) {
         MemberPage memberPage = memberService.getAllForm(page, pageSize);
         List<MemberDto> memberDtoList = memberService.findAll();
-        model.addAttribute("members", memberPage.getContents());
+//        model.addAttribute("members", memberPage.getContents());
+        model.addAttribute("members", memberDtoList);
         model.addAttribute("indexPage", memberPage.getCurrentPage());
         model.addAttribute("totalPages", memberPage.getTotalPages());
         model.addAttribute("pageSize", pageSize);
@@ -142,7 +143,7 @@ public class MemberApi {
         MemberReq memberReq = new MemberReq(newName, newAccount, cPassword, depId);
         System.out.println("***");
 
-        if (checkAccount(newAccount)) {
+
             Member member = new Member();
             member.setAccount(newAccount);
             member.setPassword(cPassword);
@@ -156,10 +157,6 @@ public class MemberApi {
                 memberDao.delete(member);
                 model.addAttribute("errMsg", "系統發生異常請再嘗試，或者洽系統相關人員!");
             }
-        } else {
-            model.addAttribute("errMsg", "同場次此手機號碼已註冊過");
-            return "redirect:/members";
-        }
         return "redirect:/members";
     }
 
