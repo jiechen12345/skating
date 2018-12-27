@@ -38,9 +38,16 @@ public class MemberAjaxApi {
 
     @Action("MemberApi[deleteMember]")
     @RequestMapping(value = "/member/deleteMember", method = RequestMethod.DELETE)
-    public void deleteMember(@RequestBody Integer id) {
-        memberService.delete(id);
+    public void deleteMember(@RequestBody String idStr) {
+        String[] idArr = idStr.split(",");
+        if(idArr.length > 0) {
+            for(int i = 0; i < idArr.length; i++) {
+                System.out.println(idArr[i]);
+                memberService.delete(Integer.parseInt(idArr[i]));
+            }
+        }
     }
+
 }
 
 

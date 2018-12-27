@@ -95,7 +95,7 @@
                 data: account,
                 sync: true,
                 success: function (data) {
-                    if(data) {
+                    if (data) {
                         var toclear = document.getElementById("newAccount");
                         toclear.value = "";
                         alertWarning("帳號已存在");
@@ -116,27 +116,29 @@
                 }
             });
             if (Checkbox) {
-                var checkedID = "";
-                $("input[name='id[]']").each(function () {
-                    if (this.checked == true) {
-                        checkedID = parseInt(this.value);
-                        // console.log(checkedID);
-                    }
-                });
-                $.ajax({
-                    contentType: 'application/json; charset=UTF-8',
-                    type: "DELETE",
-                    data: JSON.stringify(checkedID),
-                    url: "/member/deleteMember",
-                    success: function (data) {
-                        alertSuccess('刪除成功');
-                        // setTimeout("window.location.href='/verifyChangePage?pageSize=" + pageSizeVal + "'", 1000);
-                        setTimeout("location.reload()",1000);
-                    },
-                    error: function (err) {
-                        console.log(err)
-                    }
-                });
+                if (confirm("確定刪除？")) {
+                    var checkedID = "";
+                    $("input[name='id[]']").each(function () {
+                        if (this.checked == true) {
+                            checkedID += this.value + ",";
+                            console.log(checkedID);
+                        }
+                    });
+                    $.ajax({
+                        contentType: 'application/json; charset=UTF-8',
+                        type: "DELETE",
+                        data: checkedID,
+                        url: "/member/deleteMember",
+                        success: function (data) {
+                            alertSuccess('刪除成功');
+                            // setTimeout("window.location.href='/verifyChangePage?pageSize=" + pageSizeVal + "'", 1000);
+                            setTimeout("location.reload()", 1000);
+                        },
+                        error: function (err) {
+                            console.log(err)
+                        }
+                    });
+                }
             } else {
                 alertWarning('請選擇成員');
             }
