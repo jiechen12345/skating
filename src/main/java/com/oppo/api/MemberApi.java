@@ -126,13 +126,14 @@ public class MemberApi {
     }
 
 
-    @Action("MemberApi[deleteMember]")
-    @RequestMapping(value = "/member/{id}", method = RequestMethod.DELETE)
-    public String deleteMember(@PathVariable Integer id) {
-        memberService.delete(id);
-        //return "member";
-        return "redirect:/members.html";
-    }
+//    @Action("MemberApi[deleteMember]")
+//    @RequestMapping(value = "/member/deleteMember", method = RequestMethod.DELETE)
+//    public String deleteMember(@RequestParam Integer id) {
+//        System.out.println("DDDDDDDD");
+//        memberService.delete(id);
+//        //return "member";
+//        return "redirect:/members";
+//    }
 
     @Action("MemberApi[addOrder]")
 //    @GetMapping("/addOrder")
